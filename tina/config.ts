@@ -27,7 +27,7 @@ const heroTemplate = {
   label: "Hero",
   fields: [
     { type: "string", name: "eyebrow", label: "Eyebrow" },
-    { type: "string", name: "heading", label: "Heading", required: true, ui: { component: "textarea" } },
+    { type: "string", name: "heading", label: "Heading", ui: { component: "textarea" } },
     { type: "string", name: "ctaPrimaryLabel", label: "Primary button label" },
     { type: "string", name: "ctaPrimaryHref", label: "Primary button link" },
     { type: "string", name: "ctaSecondaryLabel", label: "Secondary button label" },
