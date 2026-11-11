@@ -1,0 +1,102 @@
+---
+/**
+ * BaseLayout — shared <head>, SEO, Google Analytics, fonts, Header + Footer.
+ * Per-page SEO is passed via props. Structural plumbing (analytics, favicons,
+ * fonts, canonical/OG scaffolding) lives here in code — never editable in Tina.
+ */
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import "../styles/global.css";
+
+export interface Props {
+  title: string;
+  description: string;
+  /** path only, e.g. "/" or "/about" — combined with site for canonical/OG url */
+  path?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  /** optional JSON-LD object injected as application/ld+json */
+  jsonLd?: Record<string, any>;
+  /** which nav link is active: home|about|credentials|services|industries|contact */
+  active?: string;
+}
+
+const {
+  title,
+  description,
+  path = "/",
+  ogTitle,
+  ogDescription,
+  jsonLd,
+  active = "",
+} = Astro.props;
+
+const SITE = "https://powercapital.cloud";
+const canonical = new URL(path, SITE).href;
+const ogImg = `${SITE}/assets/img/og-cover.png`;
+const _ogTitle = ogTitle ?? title;
+const _ogDesc = ogDescription ?? description;
+const GA_ID = "G-ZZ170WEYFW";
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google Analytics (GA4) -->
+    <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
+    <script is:inline define:vars={{ GA_ID }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag("js", new Date());
+      gtag("config", GA_ID);
+    </script>
+    <!-- End Google Analytics -->
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content="index, follow" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Power Capital" />
+    <meta property="og:title" content={_ogTitle} />
+    <meta property="og:description" content={_ogDesc} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImg} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={_ogTitle} />
+    <meta name="twitter:description" content={_ogDesc} />
+    <meta name="twitter:image" content={ogImg} />
+
+    <link rel="icon" href="/assets/img/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicon-16.png" />
+    <link rel="apple-touch-icon" href="/assets/img/favicon-180.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#0b1f3b" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    {jsonLd && (
+      <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    )}
+  </head>
+  <body>
+    <Header active={active} />
+    <slot />
+    <Footer />
+
+    <script src="/assets/js/main.js" is:inline></script>
+  </body>
+</html>

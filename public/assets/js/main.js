@@ -1,0 +1,116 @@
+// Power Capital — shared site JS
+(function(){
+  // Mobile nav toggle
+  var toggle = document.querySelector('.nav-toggle');
+  var links  = document.querySelector('.nav-links');
+  if(toggle && links){
+    toggle.addEventListener('click', function(){
+      links.classList.toggle('open');
+    });
+  }
+
+  // Header shadow on scroll
+  var header = document.querySelector('.site-header');
+  function onScroll(){
+    if(!header) return;
+    if(window.scrollY > 8){ header.classList.add('scrolled'); }
+    else { header.classList.remove('scrolled'); }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  // Current year in footer
+  document.querySelectorAll('[data-year]').forEach(function(el){
+    el.textContent = new Date().getFullYear();
+  });
+
+  // Reveal on scroll
+  var revealEls = document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window && revealEls.length){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, {threshold:0.12});
+    revealEls.forEach(function(el){ io.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  }
+
+  // Contact form — Web3Forms submission
+  var form = document.getElementById('contact-form');
+  if(form){
+    var note = document.getElementById('form-result');
+    var submitBtn = form.querySelector('button[type="submit"]');
+    var btnLabel = submitBtn ? submitBtn.textContent : '';
+
+    function showNote(msg, ok){
+      if(!note) return;
+      note.style.display = 'block';
+      note.style.borderColor = ok ? 'var(--forest-500)' : 'var(--accent)';
+      note.style.color = ok ? 'var(--forest-600)' : 'var(--accent-600)';
+      note.style.background = ok ? 'var(--bg-mint)' : '#fdf1e7';
+      note.innerHTML = (ok
+        ? '<i class="fa-solid fa-circle-check"></i> <strong>Message sent!</strong> '
+        : '<i class="fa-solid fa-triangle-exclamation"></i> ') + msg;
+      // Smooth pop-in: reset then transition opacity + slight rise/scale
+      note.style.transition = 'none';
+      note.style.opacity = '0';
+      note.style.transform = 'translateY(8px) scale(.98)';
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          note.style.transition = 'opacity .32s ease, transform .32s ease';
+          note.style.opacity = '1';
+          note.style.transform = 'none';
+        });
+      });
+      note.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+
+      // Required-field check (Name, Email, Service, Message — Company is optional)
+      if(!form.name.value.trim() || !form.email.value.trim() || !form.stage.value.trim() || !form.message.value.trim()){
+        showNote('Please complete all required fields — name, email, service, and message.', false);
+        return;
+      }
+
+      // hCaptcha check — require the challenge to be completed
+      var captchaEl = form.querySelector('textarea[name="h-captcha-response"], input[name="h-captcha-response"]');
+      var captchaToken = captchaEl ? captchaEl.value.trim() : '';
+      if(!captchaToken){
+        showNote('Please complete the “I am human” check below before sending.', false);
+        return;
+      }
+
+      if(submitBtn){ submitBtn.disabled = true; submitBtn.textContent = 'Sending…'; }
+
+      var data = Object.fromEntries(new FormData(form).entries());
+      // Build a dynamic email subject from the submitted name
+      var senderName = (form.name.value || '').trim();
+      data.subject = senderName ? ('New Power Capital form submission from ' + senderName) : 'New Power Capital form submission';
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json', 'Accept':'application/json'},
+        body: JSON.stringify(data)
+      })
+      .then(function(r){ return r.json(); })
+      .then(function(res){
+        if(res.success){
+          showNote('Thanks for reaching out — we will get back to you.', true);
+          form.reset();
+        } else {
+          showNote('Something went wrong sending your message. Please email us or connect on LinkedIn instead.', false);
+        }
+      })
+      .catch(function(){
+        showNote('Network error — please try again, or reach us on LinkedIn.', false);
+      })
+      .finally(function(){
+        if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = btnLabel; }
+        if(window.hcaptcha && typeof window.hcaptcha.reset === 'function'){ try { window.hcaptcha.reset(); } catch(err){} }
+      });
+    });
+  }
+})();

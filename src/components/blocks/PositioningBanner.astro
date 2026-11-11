@@ -1,0 +1,22 @@
+---
+export interface Props {
+  eyebrow?: string;
+  heading?: string;
+  body?: string;
+  theme?: "navy" | "mint";
+}
+const { eyebrow, heading, body, theme = "navy" } = Astro.props;
+const sectionClass = theme === "navy" ? "bg-navy" : "bg-mint";
+const headStyle = theme === "navy" ? "margin-bottom:.6rem;color:#fff" : "margin-bottom:.6rem";
+const bodyStyle = theme === "navy"
+  ? "color:#c3d2e3;font-size:1.15rem;max-width:62ch;margin:0 auto"
+  : "font-size:1.15rem;max-width:62ch;margin:0 auto";
+const eyebrowStyle = theme === "navy" ? "color:var(--accent-300)" : undefined;
+---
+<section class={sectionClass}>
+  <div class="container" style="text-align:center;max-width:860px">
+    {eyebrow && <span class="eyebrow" style={eyebrowStyle}>{eyebrow}</span>}
+    {heading && <h2 style={headStyle}>{heading}</h2>}
+    {body && <p style={bodyStyle}>{body}</p>}
+  </div>
+</section>

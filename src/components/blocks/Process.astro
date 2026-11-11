@@ -1,0 +1,30 @@
+---
+export interface Props {
+  eyebrow?: string;
+  heading?: string;
+  steps?: { title: string; body: string }[];
+  ctaLabel?: string;
+  ctaHref?: string;
+  theme?: "mint" | "navy" | "plain";
+}
+const { eyebrow, heading, steps = [], ctaLabel, ctaHref, theme = "mint" } = Astro.props;
+const sectionClass = theme === "mint" ? "bg-mint" : theme === "navy" ? "bg-navy" : "";
+---
+<section class={sectionClass}>
+  <div class="container">
+    <div class="section-head center mx-auto">
+      {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+      {heading && <h2>{heading}</h2>}
+    </div>
+    <div class="steps" style="max-width:720px;margin:0 auto">
+      {steps.map((s) => (
+        <div class="step reveal"><h3>{s.title}</h3><p>{s.body}</p></div>
+      ))}
+    </div>
+    {ctaLabel && (
+      <div class="center" style="margin-top:44px">
+        <a href={ctaHref} class="btn btn-dark btn-lg">{ctaLabel}</a>
+      </div>
+    )}
+  </div>
+</section>

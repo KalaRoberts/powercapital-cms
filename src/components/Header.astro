@@ -1,0 +1,32 @@
+---
+export interface Props { active?: string; }
+const { active = "" } = Astro.props;
+const links = [
+  { key: "home", label: "Home", href: "/" },
+  { key: "about", label: "About", href: "/about" },
+  { key: "credentials", label: "Credentials", href: "/credentials" },
+  { key: "services", label: "Services", href: "/services" },
+  { key: "industries", label: "Industries", href: "/industries" },
+  { key: "contact", label: "Contact", href: "/contact" },
+];
+---
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/">
+      <img src="/assets/img/logo-rich.png" alt="Power Capital logo" />
+      <span>Power Capital<span class="brand-sub">Fractional CFO</span></span>
+    </a>
+    <nav>
+      <ul class="nav-links">
+        {links.map((l) => (
+          <li>
+            <a href={l.href} class={active === l.key ? "active" : undefined}>{l.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <div class="nav-cta">
+      <button class="nav-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>

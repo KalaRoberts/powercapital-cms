@@ -1,0 +1,49 @@
+---
+export interface Props {
+  eyebrow?: string;
+  heading: string;
+  ctaPrimaryLabel?: string;
+  ctaPrimaryHref?: string;
+  ctaSecondaryLabel?: string;
+  ctaSecondaryHref?: string;
+  stats?: { value: string; label: string }[];
+  portrait?: string;
+  portraitAlt?: string;
+  badgeTop?: string;
+  badgeBottom?: string;
+}
+const {
+  eyebrow, heading,
+  ctaPrimaryLabel, ctaPrimaryHref,
+  ctaSecondaryLabel, ctaSecondaryHref,
+  stats = [], portrait, portraitAlt,
+  badgeTop, badgeBottom,
+} = Astro.props;
+---
+<section class="hero">
+  <div class="container hero-inner">
+    <div>
+      {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+      <h1>{heading}</h1>
+      <div class="hero-cta">
+        {ctaPrimaryLabel && <a href={ctaPrimaryHref} class="btn btn-primary btn-lg">{ctaPrimaryLabel}</a>}
+        {ctaSecondaryLabel && <a href={ctaSecondaryHref} class="btn btn-light btn-lg">{ctaSecondaryLabel}</a>}
+      </div>
+      {stats.length > 0 && (
+        <div class="hero-stats">
+          {stats.map((s) => (
+            <div class="stat"><div class="n">{s.value}</div><div class="l">{s.label}</div></div>
+          ))}
+        </div>
+      )}
+    </div>
+    {portrait && (
+      <div class="hero-portrait">
+        <img src={portrait} alt={portraitAlt} />
+        {(badgeTop || badgeBottom) && (
+          <div class="hero-badge"><div class="n">{badgeTop}</div><div class="l">{badgeBottom}</div></div>
+        )}
+      </div>
+    )}
+  </div>
+</section>

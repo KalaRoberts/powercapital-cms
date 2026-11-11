@@ -1,0 +1,64 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/blocks/Hero.astro";
+import PainPoints from "../components/blocks/PainPoints.astro";
+import PositioningBanner from "../components/blocks/PositioningBanner.astro";
+import Process from "../components/blocks/Process.astro";
+import CtaBand from "../components/blocks/CtaBand.astro";
+import home from "../../content/pages/home.json";
+
+// Map each block's _template to its component.
+const BLOCKS: Record<string, any> = {
+  hero: Hero,
+  painPoints: PainPoints,
+  positioningBanner: PositioningBanner,
+  process: Process,
+  ctaBand: CtaBand,
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  name: "Power Capital",
+  description:
+    "Fractional CFO services providing executive financial architecture for data centers, construction, and real estate.",
+  url: "https://powercapital.cloud",
+  image: "https://powercapital.cloud/assets/img/og-cover.png",
+  areaServed: "US",
+  serviceType: [
+    "Fractional CFO",
+    "Financial Planning & Analysis",
+    "Internal Audit & Controls",
+    "Capital Raising",
+    "Accounting Policy & Governance",
+  ],
+  knowsAbout: [
+    "Data center finance",
+    "Construction finance",
+    "Real estate finance",
+    "Capital stack modeling",
+    "Draw schedules",
+    "Financial covenants",
+  ],
+  founder: {
+    "@type": "Person",
+    name: "John Roberts",
+    jobTitle: "President & Fractional CFO",
+    sameAs: "https://www.linkedin.com/in/jmroberts67/",
+  },
+};
+---
+<BaseLayout
+  title={home.title}
+  description={home.description}
+  path="/"
+  ogTitle={home.ogTitle}
+  ogDescription={home.ogDescription}
+  active="home"
+  jsonLd={jsonLd}
+>
+  {home.blocks.map((block: any) => {
+    const Cmp = BLOCKS[block._template];
+    return Cmp ? <Cmp {...block} /> : null;
+  })}
+</BaseLayout>
