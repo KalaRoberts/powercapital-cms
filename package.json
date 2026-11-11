@@ -4,6 +4,9 @@
   "version": "1.0.0",
   "private": true,
   "description": "Power Capital — fractional CFO site (Astro + TinaCMS)",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "tinacms dev -c \"astro dev\"",
     "build": "tinacms build && astro build",

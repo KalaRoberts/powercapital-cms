@@ -13,6 +13,14 @@ import { defineConfig } from "tinacms";
  *   NEXT_PUBLIC_TINA_CLIENT_ID  and  TINA_TOKEN
  */
 
+// ---- Reusable field groups ----
+const ctaFields = [
+  { type: "string", name: "ctaPrimaryLabel", label: "Primary button label" },
+  { type: "string", name: "ctaPrimaryHref", label: "Primary button link" },
+  { type: "string", name: "ctaSecondaryLabel", label: "Secondary button label" },
+  { type: "string", name: "ctaSecondaryHref", label: "Secondary button link" },
+] as const;
+
 // ---- Block templates (the section types the Home page can use) ----
 const heroTemplate = {
   name: "hero",
@@ -116,6 +124,7 @@ export default defineConfig({
         path: "content/pages",
         format: "json",
         ui: {
+          // route each page doc to its live URL for Tina's "edit this page" link
           router: ({ document }) => {
             const slug = document._sys.filename;
             return slug === "home" ? "/" : `/${slug}`;

@@ -15,7 +15,7 @@ The site originally shipped as hand-authored static HTML (a separate repo deploy
 - **The site stays fast and static** — Astro outputs plain HTML/CSS/JS; there's no server to run.
 - **Hosting runs the build automatically** — Cloudflare Pages builds and deploys on every push.
 
-This repo will be the permanent home of the live site. (The original HTML repo is kept only as a rollback.)
+This repo is the **permanent home** of the live site. (The original hand-HTML repo is kept only as a short-term rollback.)
 
 ---
 
