@@ -25,16 +25,31 @@
   });
 
   // Reveal on scroll
-  var revealEls = document.querySelectorAll('.reveal');
-  if('IntersectionObserver' in window && revealEls.length){
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(e){
-        if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+  // Also handles sections re-rendered later (e.g. by the TinaCMS live editor),
+  // and shows everything immediately when the page is inside the editor iframe.
+  var inEditor = window.self !== window.top;
+  var io = (!inEditor && 'IntersectionObserver' in window)
+    ? new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+        });
+      }, {threshold:0.12})
+    : null;
+  function setupReveal(root){
+    var els = [];
+    if(root.matches && root.matches('.reveal:not(.in)')) els.push(root);
+    if(root.querySelectorAll) els = els.concat([].slice.call(root.querySelectorAll('.reveal:not(.in)')));
+    els.forEach(function(el){
+      if(io){ io.observe(el); } else { el.classList.add('in'); }
+    });
+  }
+  setupReveal(document);
+  if('MutationObserver' in window){
+    new MutationObserver(function(muts){
+      muts.forEach(function(m){
+        m.addedNodes.forEach(function(n){ if(n.nodeType === 1) setupReveal(n); });
       });
-    }, {threshold:0.12});
-    revealEls.forEach(function(el){ io.observe(el); });
-  } else {
-    revealEls.forEach(function(el){ el.classList.add('in'); });
+    }).observe(document.body, {childList:true, subtree:true});
   }
 
   // Contact form — Web3Forms submission

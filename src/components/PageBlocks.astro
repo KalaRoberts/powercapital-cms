@@ -1,0 +1,28 @@
+---
+import Hero from "./blocks/Hero.astro";
+import PainPoints from "./blocks/PainPoints.astro";
+import PositioningBanner from "./blocks/PositioningBanner.astro";
+import Process from "./blocks/Process.astro";
+import CtaBand from "./blocks/CtaBand.astro";
+
+// Tina returns __typename like "PageBlocksHero"; the JSON uses _template "hero".
+const BLOCKS: Record<string, any> = {
+  hero: Hero,
+  painPoints: PainPoints,
+  positioningBanner: PositioningBanner,
+  process: Process,
+  ctaBand: CtaBand,
+};
+const keyOf = (b: any): string => {
+  if (b?._template) return b._template;
+  const k = String(b?.__typename ?? "").replace(/^PageBlocks/, "");
+  return k.charAt(0).toLowerCase() + k.slice(1);
+};
+
+const { page } = Astro.props as { page: any };
+const blocks: any[] = page?.blocks ?? [];
+---
+{blocks.map((block) => {
+  const Cmp = BLOCKS[keyOf(block)];
+  return Cmp ? <Cmp {...block} block={block} /> : null;
+})}

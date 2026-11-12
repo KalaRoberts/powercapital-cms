@@ -8,16 +8,19 @@
     "node": "22.x"
   },
   "scripts": {
-    "dev": "tinacms dev -c \"astro dev\"",
+    "dev": "tinacms dev -c \"node scripts/copy-bridge.mjs && astro dev\"",
     "build": "tinacms build && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^4.16.0"
+    "@astrojs/cloudflare": "^14.4.7",
+    "@tinacms/astro": "^0.8.0",
+    "astro": "^7.4.11",
+    "cookie": "^2.0.2"
   },
   "devDependencies": {
-    "tinacms": "^2.2.0",
-    "@tinacms/cli": "^1.6.0"
+    "@tinacms/cli": "^4.0.5",
+    "tinacms": "^3.15.2"
   }
 }
