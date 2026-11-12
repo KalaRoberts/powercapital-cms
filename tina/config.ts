@@ -112,7 +112,8 @@ export default defineConfig({
   token: process.env.TINA_TOKEN || "",
   branch:
     process.env.GITHUB_BRANCH ||
-    process.env.CF_PAGES_BRANCH ||
+    process.env.WORKERS_CI_BRANCH ||   // Cloudflare Workers Builds
+    process.env.CF_PAGES_BRANCH ||     // Cloudflare Pages (legacy)
     "main",
   build: { outputFolder: "admin", publicFolder: "public" },
   media: { tina: { mediaRoot: "assets/img", publicFolder: "public" } },
