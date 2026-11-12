@@ -1,0 +1,21 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+.astro/
+
+# TinaCMS generated files (tina-lock.json is NOT ignored - it must be committed)
+tina/__generated__/
+public/admin/
+
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# logs & OS junk
+npm-debug.log*
+*.log
+.DS_Store
+Thumbs.db
