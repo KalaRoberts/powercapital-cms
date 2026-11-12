@@ -1,11 +1,10 @@
 {
   "title": "Power Capital: Fractional CFO | President: John Roberts",
   "description": "Capital strategy for cloud infrastructure, without the C-suite overhead.",
-  "ogTitle": "Power Capital: John Roberts, Founder",
+  "ogTitle": "Power Capital: John Roberts, President",
   "ogDescription": "Capital strategy for cloud infrastructure, without the C-suite overhead.",
   "blocks": [
     {
-      "_template": "hero",
       "eyebrow": "Power Capital · Fractional CFO",
       "heading": "Capital strategy for cloud infrastructure, without the C-suite overhead.",
       "ctaPrimaryLabel": "Contact Us",
@@ -17,49 +16,80 @@
       "badgeTop": "CFO",
       "badgeBottom": "On your terms",
       "stats": [
-        { "value": "16 yrs", "label": "As a Finance Professional" },
-        { "value": "$12B/yr", "label": "Datacenter capital managed" },
-        { "value": "$2.47T", "label": "Revenue Scaled" }
-      ]
+        {
+          "value": "16 yrs",
+          "label": "As a Finance Professional"
+        },
+        {
+          "value": "$12B/yr",
+          "label": "Datacenter capital managed"
+        },
+        {
+          "value": "$2.47T",
+          "label": "Revenue Scaled"
+        }
+      ],
+      "_template": "hero"
     },
     {
-      "_template": "painPoints",
       "eyebrow": "Sound familiar?",
       "heading": "The build is scaling — and the finance function can't keep pace.",
       "lead": "Data center builds involve intricate debt stacks, construction loans, and strict financial covenants. Without rigorous internal controls and audit-ready reporting, a single missed metric or mismanaged draw schedule can trigger a default or stall a multi-million-dollar build.",
       "cards": [
-        { "title": "Draw schedules outpace your forecast", "body": "Funding construction milestones, vendor invoices, and contractor pay applications keeps colliding with delayed financing tranches — and you're managing liquidity reactively instead of modeling it ahead." },
-        { "title": "The capital stack demands real modeling", "body": "Lenders and investors ask about DSCR, capital-stack optimization, and phase-level IRR — and your team can't produce institutional-grade models and stress tests on demand." },
-        { "title": "Job-level margins stay murky", "body": "Project volume is high, but true profitability isn't clear until a build closes out. Cost overruns and unrecovered change orders surface too late to fix, with no real-time committed-vs-actual tracking." }
-      ]
+        {
+          "title": "Draw schedules outpace your forecast",
+          "body": "Funding construction milestones, vendor invoices, and contractor pay applications keeps colliding with delayed financing tranches — and you're managing liquidity reactively instead of modeling it ahead."
+        },
+        {
+          "title": "The capital stack demands real modeling",
+          "body": "Lenders and investors ask about DSCR, capital-stack optimization, and phase-level IRR — and your team can't produce institutional-grade models and stress tests on demand."
+        },
+        {
+          "title": "Job-level margins stay murky",
+          "body": "Project volume is high, but true profitability isn't clear until a build closes out. Cost overruns and unrecovered change orders surface too late to fix, with no real-time committed-vs-actual tracking."
+        }
+      ],
+      "_template": "painPoints"
     },
     {
-      "_template": "positioningBanner",
       "theme": "navy",
       "eyebrow": "The Power Capital difference",
       "heading": "Data center capital demands absolute precision.",
-      "body": "Power Capital provides executive financial architecture for data centers, construction, and real estate—protecting high-stakes builds from draw friction and compliance gridlock."
+      "body": "Power Capital provides executive financial architecture for data centers, construction, and real estate—protecting high-stakes builds from draw friction and compliance gridlock.",
+      "_template": "positioningBanner"
     },
     {
-      "_template": "process",
       "theme": "mint",
       "eyebrow": "How it works",
       "heading": "We're here for you.",
       "steps": [
-        { "title": "Introduction", "body": "Reach out through the contact form or on LinkedIn, and tell us where the business is and where you want it to go." },
-        { "title": "Financial health review", "body": "A look at your books, cash position, and reporting to surface quick wins and real risks." },
-        { "title": "CFO roadmap", "body": "We present the priorities for the next 90 days and the engagement that fits." },
-        { "title": "Ongoing rhythm", "body": "Forecasts, reporting, and review meetings on a cadence that fits your business, so you always know where you stand." }
+        {
+          "title": "Introduction",
+          "body": "Reach out through the contact form or on LinkedIn, and tell us where the business is and where you want it to go."
+        },
+        {
+          "title": "Financial health review",
+          "body": "A look at your books, cash position, and reporting to surface quick wins and real risks."
+        },
+        {
+          "title": "CFO roadmap",
+          "body": "We present the priorities for the next 90 days and the engagement that fits."
+        },
+        {
+          "title": "Ongoing rhythm",
+          "body": "Forecasts, reporting, and review meetings on a cadence that fits your business, so you always know where you stand."
+        }
       ],
       "ctaLabel": "See all services",
-      "ctaHref": "/services"
+      "ctaHref": "/services",
+      "_template": "process"
     },
     {
-      "_template": "ctaBand",
       "heading": "Your Next Move",
       "body": "Send us a message or connect on LinkedIn to tell us about your business and what you're looking for. No pressure, no obligation.",
       "ctaLabel": "Contact Us",
-      "ctaHref": "/contact"
+      "ctaHref": "/contact",
+      "_template": "ctaBand"
     }
   ]
 }
