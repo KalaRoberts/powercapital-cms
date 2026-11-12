@@ -8,6 +8,14 @@ const {
   badgeTop, badgeBottom, block,
 } = Astro.props as any;
 const f = (name: string) => (block ? tinaField(block, name) : undefined);
+// TinaCloud rewrites repo image paths to its media CDN (assets.tina.io), which
+// may not have the file. Map those back to the copy committed in public/assets/img.
+const localImg = (src?: string) => {
+  if (!src) return src;
+  const m = src.match(/^https:\/\/assets\.tina\.io\/.*\/__file\/(.+)$/);
+  return m ? `/assets/img/${m[1]}` : src;
+};
+const portraitSrc = localImg(portrait);
 ---
 <section class="hero">
   <div class="container hero-inner">
@@ -31,7 +39,7 @@ const f = (name: string) => (block ? tinaField(block, name) : undefined);
     </div>
     {portrait && (
       <div class="hero-portrait">
-        <img src={portrait} alt={portraitAlt} data-tina-field={f("portrait")} />
+        <img src={portraitSrc} alt={portraitAlt} data-tina-field={f("portrait")} />
         {(badgeTop || badgeBottom) && (
           <div class="hero-badge">
             <div class="n" data-tina-field={f("badgeTop")}>{badgeTop}</div>
