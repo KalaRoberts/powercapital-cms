@@ -37,6 +37,8 @@ const ogImg = `${SITE}/assets/img/og-cover.png`;
 const _ogTitle = ogTitle ?? title;
 const _ogDesc = ogDescription ?? description;
 const GA_ID = "G-ZZ170WEYFW";
+// Page type for analytics: home | about | credentials | services | industries | contact
+const PAGE_TYPE = active || "other";
 ---
 
 <!DOCTYPE html>
@@ -44,11 +46,12 @@ const GA_ID = "G-ZZ170WEYFW";
   <head>
     <!-- Google Analytics (GA4) -->
     <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
-    <script is:inline define:vars={{ GA_ID }}>
+    <script is:inline define:vars={{ GA_ID, PAGE_TYPE }}>
       window.dataLayer = window.dataLayer || [];
       function gtag() { dataLayer.push(arguments); }
       gtag("js", new Date());
-      gtag("config", GA_ID);
+      // page_type -> GA4 custom dimension "Page type" (event scope)
+      gtag("config", GA_ID, { page_type: PAGE_TYPE });
     </script>
     <!-- End Google Analytics -->
 
@@ -92,7 +95,7 @@ const GA_ID = "G-ZZ170WEYFW";
       <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     )}
   </head>
-  <body>
+  <body data-page-type={PAGE_TYPE}>
     <Header active={active} />
     <slot />
     <Footer />

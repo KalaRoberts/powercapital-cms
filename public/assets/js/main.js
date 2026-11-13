@@ -50,6 +50,34 @@
     }).observe(document.body, {childList:true, subtree:true});
   }
 
+  // Google Analytics events (custom dimensions: page_type, cta_location,
+  // cta_text, link_location, form_service). Off inside the Tina editor.
+  function track(name, params){
+    if(inEditor || typeof window.gtag !== 'function') return;
+    params = params || {};
+    params.page_type = document.body.getAttribute('data-page-type') || 'other';
+    window.gtag('event', name, params);
+  }
+  function whereIs(el){
+    if(el.closest('.site-header')) return 'header';
+    if(el.closest('.site-footer')) return 'footer';
+    var s = el.closest('section');
+    if(!s) return 'page';
+    var c = (s.className || '').split(/\s+/).filter(function(x){ return x && x !== 'reveal' && x !== 'in'; })[0];
+    return c || 'section';
+  }
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a[href]');
+    if(!a) return;
+    var href = a.getAttribute('href') || '';
+    var text = (a.textContent || '').trim().slice(0, 100) || a.getAttribute('aria-label') || '(icon)';
+    if(href.indexOf('linkedin.com') !== -1){
+      track('linkedin_click', { link_location: whereIs(a), cta_text: text });
+    } else if(/^\/contact\/?(#.*)?$/.test(href) || /powercapital\.cloud\/contact\/?$/.test(href)){
+      track('contact_cta_click', { cta_location: whereIs(a), cta_text: text });
+    }
+  });
+
   // Contact form — Web3Forms submission
   var form = document.getElementById('contact-form');
   if(form){
@@ -111,6 +139,9 @@
       .then(function(r){ return r.json(); })
       .then(function(res){
         if(res.success){
+          track('generate_lead', {
+            form_service: (form.querySelector('[name="stage"]') || {}).value || '(none)'
+          });
           showNote(form.getAttribute('data-success') || 'Thanks for reaching out — we will get back to you.', true);
           form.reset();
         } else {
