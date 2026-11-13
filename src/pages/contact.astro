@@ -1,0 +1,24 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import TinaIsland from "@tinacms/astro/TinaIsland.astro";
+import PageBlocks from "../components/PageBlocks.astro";
+import { getPage } from "../lib/tina/data";
+import { PAGE_WRAPPER } from "../lib/tina/islands";
+
+const result = await getPage("contact");
+const page: any = result.data.page;
+---
+<BaseLayout
+  title={page.title}
+  description={page.description}
+  path="/contact"
+  ogTitle={page.ogTitle}
+  ogDescription={page.ogDescription}
+  active="contact"
+>
+  <TinaIsland name="page" wrapper={PAGE_WRAPPER} params={{ slug: "contact" }} primary>
+    <PageBlocks page={page} />
+  </TinaIsland>
+  <!-- Web3Forms client: renders the hCaptcha widget into .h-captcha -->
+  <script is:inline src="https://web3forms.com/client/script.js" async defer></script>
+</BaseLayout>

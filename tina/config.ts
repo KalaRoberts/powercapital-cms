@@ -260,6 +260,39 @@ const plansTemplate = {
   ],
 };
 
+const contactSectionTemplate = {
+  name: "contactSection",
+  label: "Contact Form + Details",
+  fields: [
+    { type: "string", name: "formHeading", label: "Form heading" },
+    { type: "string", name: "formIntro", label: "Form intro" },
+    {
+      type: "object", name: "serviceOptions", label: "Service dropdown options", list: true,
+      ui: { itemProps: (i: any) => ({ label: i?.text || "Option" }) },
+      fields: [{ type: "string", name: "text", label: "Option text" }],
+    },
+    { type: "string", name: "messagePlaceholder", label: "Message box hint text (grey text before typing)", ui: { component: "textarea" } },
+    { type: "string", name: "buttonLabel", label: "Send button label" },
+    { type: "string", name: "successMessage", label: "Message shown after sending (after 'Message sent!')" },
+    { type: "string", name: "detailsHeading", label: "Details heading" },
+    { type: "string", name: "detailsIntro", label: "Details intro" },
+    {
+      type: "object", name: "rows", label: "Detail rows", list: true,
+      ui: { itemProps: (i: any) => ({ label: i?.label || "Row" }) },
+      fields: [
+        { type: "string", name: "icon", label: "Icon (Font Awesome class)" },
+        { type: "string", name: "label", label: "Label" },
+        { type: "string", name: "value", label: "Text" },
+      ],
+    },
+    { type: "string", name: "linkedinLabel", label: "LinkedIn button label" },
+    { type: "string", name: "linkedinHref", label: "LinkedIn link" },
+    { type: "image", name: "profileImage", label: "Profile photo" },
+    { type: "string", name: "profileName", label: "Profile name" },
+    { type: "string", name: "profileRole", label: "Profile role" },
+  ],
+};
+
 export default defineConfig({
   clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID || "",
   token: process.env.TINA_TOKEN || "",
@@ -322,6 +355,7 @@ export default defineConfig({
               recommendationsTemplate,
               numberedListTemplate,
               plansTemplate,
+              contactSectionTemplate,
             ],
             ui: {
               visualSelector: true,

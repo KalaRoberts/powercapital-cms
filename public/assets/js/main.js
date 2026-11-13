@@ -113,7 +113,7 @@
       .then(function(r){ return r.json(); })
       .then(function(res){
         if(res.success){
-          showNote('Thanks for reaching out — we will get back to you.', true);
+          showNote(form.getAttribute('data-success') || 'Thanks for reaching out — we will get back to you.', true);
           form.reset();
         } else {
           showNote('Something went wrong sending your message. Please email us or connect on LinkedIn instead.', false);

@@ -1,0 +1,90 @@
+---
+import { tinaField } from "@tinacms/astro/tina-field";
+import { localImg } from "../../lib/inline";
+// Contact form + direct-contact panel. Text is editable in Tina; the Web3Forms
+// access key, honeypot, hCaptcha and field names stay fixed in code so the
+// form can't be broken from the CMS. Submission logic lives in public/assets/js/main.js.
+const WEB3FORMS_KEY = "b98fb3af-5915-41e0-9919-e3706c71046c";
+const {
+  formHeading, formIntro, serviceOptions = [], messagePlaceholder, buttonLabel, successMessage,
+  detailsHeading, detailsIntro, rows = [], linkedinLabel, linkedinHref,
+  profileImage, profileName, profileRole, block,
+} = Astro.props as any;
+const f = (n: string) => (block ? tinaField(block, n) : undefined);
+---
+<section>
+  <div class="container contact-grid">
+    <div class="reveal">
+      {formHeading && <h2 data-tina-field={f("formHeading")}>{formHeading}</h2>}
+      {formIntro && <p style="color:var(--body);margin-bottom:22px" data-tina-field={f("formIntro")}>{formIntro}</p>}
+      <form id="contact-form" action="https://api.web3forms.com/submit" method="POST" novalidate
+            data-success={successMessage || undefined}>
+        <input type="hidden" name="access_key" value={WEB3FORMS_KEY} />
+        <input type="hidden" name="subject" value="New Power Capital form submission" />
+        <input type="hidden" name="from_name" value="Power Capital Website" />
+        <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off" />
+        <div class="form-field">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" placeholder="Your full name" required />
+        </div>
+        <div class="form-field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="you@company.com" required />
+        </div>
+        <div class="form-field">
+          <label for="company">Company <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+          <input type="text" id="company" name="company" placeholder="Company name" />
+        </div>
+        <div class="form-field">
+          <label for="stage">What type of service are you seeking?</label>
+          <select id="stage" name="stage" required data-tina-field={f("serviceOptions")}>
+            <option value="">Select one…</option>
+            {(serviceOptions ?? []).map((o: any) => <option>{o.text}</option>)}
+          </select>
+        </div>
+        <div class="form-field">
+          <label for="message">How can we help?</label>
+          <textarea id="message" name="message" rows="5" required data-tina-field={f("messagePlaceholder")}
+                    placeholder={messagePlaceholder || "A few sentences about your business and what's on your mind."}></textarea>
+        </div>
+        <div class="h-captcha" data-captcha="true" style="margin-bottom:18px"></div>
+        <button type="submit" class="btn btn-primary btn-lg" style="width:100%;justify-content:center" data-tina-field={f("buttonLabel")}>{buttonLabel || "Send Message"}</button>
+        <div id="form-result" class="form-note" style="display:none;margin-top:18px;border-style:solid" role="status" aria-live="polite"></div>
+      </form>
+    </div>
+
+    <div class="reveal">
+      {detailsHeading && <h2 data-tina-field={f("detailsHeading")}>{detailsHeading}</h2>}
+      {detailsIntro && <p style="color:var(--body);margin-bottom:22px" data-tina-field={f("detailsIntro")}>{detailsIntro}</p>}
+      {rows && rows.length > 0 && (
+        <div class="contact-card" style="margin-bottom:24px">
+          {rows.map((r: any) => (
+            <div class="contact-row">
+              {r.icon && <div class="ico" data-tina-field={tinaField(r, "icon")}><i class={r.icon}></i></div>}
+              <div>
+                <div class="k" data-tina-field={tinaField(r, "label")}>{r.label}</div>
+                <div class="v" data-tina-field={tinaField(r, "value")}>{r.value}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      {linkedinLabel && (
+        <a href={linkedinHref} target="_blank" rel="noopener" class="btn btn-dark btn-lg"
+           style="width:100%;justify-content:center;margin-bottom:24px" data-tina-field={f("linkedinLabel")}>
+          <i class="fa-brands fa-linkedin"></i> {linkedinLabel}
+        </a>
+      )}
+      {(profileName || profileImage) && (
+        <div style="display:flex;gap:16px;align-items:center;background:var(--bg-mint);border-radius:var(--radius);padding:20px">
+          {profileImage && <img src={localImg(profileImage)} alt={profileName} data-tina-field={f("profileImage")}
+               style="width:72px;height:72px;border-radius:50%;object-fit:cover;flex:none;box-shadow:var(--shadow-sm)" />}
+          <div>
+            <div style="font-weight:700;color:var(--ink)" data-tina-field={f("profileName")}>{profileName}</div>
+            <div style="color:var(--muted);font-size:.92rem" data-tina-field={f("profileRole")}>{profileRole}</div>
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+</section>
