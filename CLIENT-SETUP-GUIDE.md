@@ -98,11 +98,11 @@ Kala may also ask you to use **https://powercapital-cms.jr-1791.workers.dev/admi
 
 1. Go to the editing address (or the testing address, if Kala asks).
 2. Sign in with your TinaCloud account.
-3. Click any text on the page and type a small change, then click **Save**.
-4. Wait about 5 minutes and reload the page in a normal browser window. Your change should be live.
-5. Change it back and save.
+3. Click any text on the page then enter your change(s) in the editor on the left (you should see the preview change in real time for most text).
+4. Click **Save**. The change(s) will take effect in the preview immediately for everything except Menu Bar changes.
+5. Wait up to 5 minutes and refresh the main site (**https://powercapital.cloud**). Your change(s) should be live.
 
-Kala will send a separate guide covering everyday editing.
+
 
 ---
 
