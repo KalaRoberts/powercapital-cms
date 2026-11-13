@@ -5,3 +5,7 @@ import client from "../../../tina/__generated__/client";
  *  can overlay unsaved edits and map clicks to fields. */
 export const getPage = (slug: string) =>
   requestWithMetadata(client.queries.page({ relativePath: `${slug}.json` }));
+
+/** Load site-wide settings (content/settings/site.json): footer tagline, etc. */
+export const getSettings = () =>
+  requestWithMetadata(client.queries.settings({ relativePath: "site.json" }));

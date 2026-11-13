@@ -273,6 +273,20 @@ export default defineConfig({
   schema: {
     collections: [
       {
+        // Site-wide settings shown on every page (footer, etc.). One document only.
+        name: "settings",
+        label: "Site Settings",
+        path: "content/settings",
+        format: "json",
+        ui: {
+          global: true,
+          allowedActions: { create: false, delete: false },
+        },
+        fields: [
+          { type: "string", name: "footerTagline", label: "Footer tagline", ui: { component: "textarea" } },
+        ],
+      },
+      {
         name: "page",
         label: "Pages",
         path: "content/pages",
