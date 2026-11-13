@@ -58,7 +58,7 @@ git push
 git branch -d port-about
 git push origin --delete port-about
 ```
-Remove the branch's preview address from TinaCloud **Site URLs**.
+Remove the branch's preview address from TinaCloud **Site URLs**. After that, Site URLs should list only `localhost:4321` and the production `workers.dev` address.
 
 ---
 

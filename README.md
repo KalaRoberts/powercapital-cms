@@ -3,7 +3,7 @@
 The website for **Power Capital**, the fractional-CFO practice of John Roberts. It's built with **Astro**, with a **TinaCMS / TinaCloud** content layer, so non-technical editors can update the site in a visual editor. They click text on the page, type, and see the change straight away. No code is needed.
 
 **Live site (current):** https://powercapital.cloud is still served by the original static-HTML repo. This repo is in the build/preview phase and takes over the domain at cutover.
-**Pages ported:** Home, About, Credentials. Still to do: Services, Industries, Contact.
+**Pages ported:** Home, About, Credentials, Services. Still to do: Industries, Contact.
 **Stack:** Astro 7 (prerendered pages) · TinaCMS 3 + TinaCloud · `@tinacms/astro` live visual editing · Cloudflare Workers · vanilla CSS/JS
 
 > Maintainers: see **[PROJECT-NOTES.md](PROJECT-NOTES.md)** for versions, the full workflow, known issues and fixes, and the cutover checklist.
@@ -57,7 +57,7 @@ powercapital-cms/
 ├── tina/
 │   ├── config.ts           # TinaCMS schema: "page" collection + section block templates
 │   └── tina-lock.json      # generated; MUST be committed whenever it changes
-├── content/pages/          # editable page content as JSON (home.json, about.json, credentials.json, …)
+├── content/pages/          # editable page content as JSON (home.json, about.json, credentials.json, services.json, …)
 ├── scripts/copy-bridge.mjs # dev-only: puts Tina's bridge.js in public/admin
 ├── src/
 │   ├── layouts/BaseLayout.astro    # <head>, SEO, Open Graph, GA4, fonts, Header + Footer
@@ -67,11 +67,12 @@ powercapital-cms/
 │   ├── components/
 │   │   ├── Header.astro · Footer.astro
 │   │   ├── PageBlocks.astro        # renders a page's blocks
-│   │   └── blocks/                 # one component per section type (Hero, PainPoints, PageHero, Bio, Timeline, Recommendations, …)
+│   │   └── blocks/                 # one component per section type (Hero, PainPoints, PageHero, Bio, Timeline, Recommendations, NumberedList, Plans, …)
 │   ├── pages/
 │   │   ├── index.astro             # Home
 │   │   ├── about.astro             # About
 │   │   ├── credentials.astro       # Credentials
+│   │   ├── services.astro          # Services
 │   │   └── tina-island/[name].ts   # editor-only on-demand route
 │   └── styles/global.css           # the design system
 └── public/
@@ -108,7 +109,7 @@ npx tinacms build --local --skip-cloud-checks -c "astro build"
 
 The Worker `powercapital-cms` is connected to this repo through Workers Builds:
 
-- **Production branch:** `main` → `https://powercapital-cms.jr-1791.workers.dev` (Home at `/`, pages at `/about`, `/credentials`, …)
+- **Production branch:** `main` → `https://powercapital-cms.jr-1791.workers.dev` (Home at `/`, pages at `/about`, `/credentials`, `/services`, …)
 - **Every other branch** gets its own **Preview** at `https://<branch>-powercapital-cms.jr-1791.workers.dev`, listed in the Worker's *Previews* section. It shows the whole site as of that branch.
 - **Build command:** `npm run build`
 - **Deploy command:** `npx wrangler deploy` · **Preview command:** `npx wrangler preview`

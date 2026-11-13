@@ -1,6 +1,6 @@
 # Power Capital CMS — Project Notes
 
-> Current state of the `powercapital-cms` repo, updated 2026-11-12 (after the Credentials port). Replaces the
+> Current state of the `powercapital-cms` repo, updated 2026-11-12 (after the Services port). Replaces the
 > earlier HANDOFF.md. **No secrets in this file.** Tokens live only in TinaCloud
 > and in Cloudflare build settings.
 
@@ -32,8 +32,9 @@ built with **Astro + TinaCMS**. It replaces the hand-written 6-page HTML site.
 - ✅ Home page ported, with live editing on Workers (`live-editing` branch, merged).
 - ✅ **About page ported** (`port-about` branch, merged). It includes the 9-role career timeline. The Philosophy text was changed from "heavy-capital builds" to "data-center and cloud-infrastructure builds".
 - ✅ **Credentials page ported** (`port-credentials` branch, merged). It has Certifications, Education, 6 LinkedIn Recommendations and a closing call-to-action. The wording is kept as-is by choice, including "build-heavy finance" and the share text's "infrastructure finance". It has **no** career timeline; that's only on About.
-- ✅ Cleanup done: old tokens and `pages.dev` Site URLs removed, the Pages project removed, merged branches deleted.
-- ⬜ Port **Services, Industries**, then **Contact** last (it has the Web3Forms form). Take the real text from the old `powercapital` repo, now at `C:\dev\Powercapital`.
+- ✅ **Services page ported** (`port-services` branch, merged). It has 8 core-service cards, 4 numbered pillars, and 3 engagement plans with an **editable "Most popular" highlight** (an on/off toggle on each plan). The share text's "capital-intensive builds" is kept as-is by choice.
+- ✅ All cleanup done: old tokens, `pages.dev` and merged-branch Site URLs removed, the Pages project removed, merged branches deleted. **No outstanding housekeeping.**
+- ⬜ Port **Industries**, then **Contact** last (it has the Web3Forms form). Take the real text from the old `powercapital` repo, now at `C:\dev\Powercapital`.
 - ⬜ Check the whole site on Workers, then do the cutover (§7).
 
 ## 3. Versions (what's installed and working)
@@ -57,13 +58,14 @@ astro.config.mjs        output 'static', cloudflare adapter (imageService passth
 wrangler.jsonc          Worker name "powercapital-cms" (must match the dashboard), nodejs_compat, previews: {}
 tina/config.ts          schema: "page" collection (content/pages/*.json) with a multi-template `blocks` list
 tina/tina-lock.json     MUST be committed whenever it changes (schema edits, Tina upgrades)
-content/pages/*.json    page content (SEO fields + ordered blocks): home.json, about.json, credentials.json
+content/pages/*.json    page content (SEO fields + ordered blocks): home.json, about.json, credentials.json, services.json
 src/lib/tina/data.ts    getPage(slug) -> requestWithMetadata(client.queries.page(...))
 src/lib/tina/islands.ts editable-region registry ("page" island -> PageBlocks)
 src/pages/tina-island/[name].ts   editor-only on-demand route (prerender = false)
 src/pages/index.astro   Home: loads the page via Tina, wraps <PageBlocks> in <TinaIsland ... primary>
 src/pages/about.astro   About: same pattern, slug "about", Person JSON-LD
 src/pages/credentials.astro   Credentials: same pattern, slug "credentials"
+src/pages/services.astro      Services: same pattern, slug "services"
 src/components/PageBlocks.astro   maps each block to a component (accepts _template or __typename)
 src/components/blocks/*.astro     section components; each text element has data-tina-field
 src/lib/inline.ts       inline(): **bold** in text fields -> <strong>; localImg(): fixes TinaCloud image paths
@@ -79,13 +81,15 @@ public/assets/js/main.js site JS (nav, scroll reveal, contact form)
 | `painPoints` | PainPoints | Home | eyebrow, heading, lead + cards |
 | `positioningBanner` | PositioningBanner | Home | navy/mint centered banner |
 | `process` | Process | Home | numbered steps + button |
-| `ctaBand` | CtaBand | Home, About, Credentials | closing call to action |
-| `pageHero` | PageHero | About, Credentials | interior-page title banner with breadcrumb |
+| `ctaBand` | CtaBand | Home, About, Credentials, Services | closing call to action |
+| `pageHero` | PageHero | About, Credentials, Services | interior-page title banner with breadcrumb |
 | `bio` | Bio | About | photo + paragraphs + checklist + button |
 | `timeline` | Timeline | About | career timeline (first item = green dot) |
-| `featureCards` | FeatureCards | About, Credentials | icon cards. Options: background `theme` (soft/mint/plain), `columns` (3 or 2), optional `lead`; each card has icon, title, optional grey `subtitle`, body (**bold** OK) |
+| `featureCards` | FeatureCards | About, Credentials, Services | icon cards. Options: background `theme` (soft/mint/plain), `columns` (3 or 2), optional `lead`; each card has icon, title, optional grey `subtitle`, body (**bold** OK) |
 | `textSection` | TextSection | About | centered eyebrow, heading, paragraph |
 | `recommendations` | Recommendations | Credentials | quote cards: eyebrow, heading, lead + list of {quote, name, role} |
+| `numberedList` | NumberedList | Services | numbered "pillars": background theme + list of {number, title, body} |
+| `plans` | Plans | Services | engagement/pricing cards: {featured toggle, badge text, name, summary, bullets, "Good fit" line}. `featured` = orange border + badge (badge defaults to "Most popular") |
 
 Reuse these before creating new ones. Fields marked "use **bold**" accept `**text**` for emphasis.
 
@@ -148,14 +152,16 @@ Only after all 6 pages are ported and checked on Workers:
 
 ## 8. Housekeeping
 
-Done (2026-11-12): old TinaCloud tokens deleted, `pages.dev` Site URLs removed, the Cloudflare Pages project removed, merged branches deleted (`live-editing`, `port-about`, `port-credentials`).
+**Nothing outstanding** as of 2026-11-12. Done: old TinaCloud tokens deleted; `pages.dev` and merged-branch Site URLs removed; the Cloudflare Pages project removed; merged branches deleted (`live-editing`, `port-about`, `port-credentials`, `port-services`).
+
+TinaCloud **Site URLs** should contain only `http://localhost:4321` and `https://powercapital-cms.jr-1791.workers.dev`, plus the preview of whatever branch is in progress. At cutover, add `https://powercapital.cloud` and `https://www.powercapital.cloud`.
 
 After merging each future branch:
 ```powershell
 git branch -d <branch>
 git push origin --delete <branch>
 ```
-Then remove its preview address from TinaCloud → Site URLs.
+Then remove its preview address from TinaCloud → Site URLs. Deleted branches may linger in TinaCloud's Branches list until the next Refresh Branches; that's harmless.
 
 ## 9. Content reference (for porting)
 
