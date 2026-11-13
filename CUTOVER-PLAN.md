@@ -23,7 +23,7 @@ Test after the branch preview builds:
 Kala owns the GA4 property `G-ZZ170WEYFW`. Finish this before the switch, so the new site's reports are complete from launch day.
 - [ ] Code: `page_type` on every hit; events `contact_cta_click` (`cta_location`, `cta_text`), `linkedin_click` (`link_location`, `cta_text`) and `generate_lead` (`form_service`). Nothing is tracked inside the editor, and no personal details are sent.
 - [ ] GA4 Admin → Custom definitions: 5 event-scoped dimensions (Page type, CTA location, CTA text, Link location, Form service).
-- [ ] Test in DebugView or Realtime on the preview; mark `generate_lead` as a key event.
+- [ ] Testing moved to Phase 5 (on the live site): check events in DevTools (Network → filter `collect`: `en=` event, `ep.` details) or GA4 Realtime; then mark `generate_lead` as a key event.
 - [ ] Optional: keep preview/workers.dev traffic out of reports.
 
 ---
@@ -145,6 +145,7 @@ Steps:
 - [ ] Contact form: send one real message from the live domain
 - [ ] Editor: log in at `https://powercapital.cloud/admin/index.html#/~/` (client and Kala), edit and save
 - [ ] GA4 Realtime shows visits on the live domain
+- [ ] GA4 custom events: Contact buttons, LinkedIn, one test form (`generate_lead`); mark `generate_lead` as a key event (see Phase 0.5)
 - [ ] Google Search Console: submit `https://powercapital.cloud/sitemap.xml` and request indexing of the home page
 - [ ] LinkedIn Post Inspector: re-scrape `https://powercapital.cloud` so link previews refresh
 - [ ] Update `PROJECT-NOTES.md`: live domain now served by the Worker; GitHub Pages retired
