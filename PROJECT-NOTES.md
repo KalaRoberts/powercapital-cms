@@ -1,6 +1,6 @@
 # Power Capital CMS — Project Notes
 
-> Current state of the `powercapital-cms` repo, updated 2026-11-12. Replaces the
+> Current state of the `powercapital-cms` repo, updated 2026-11-12 (after the About port). Replaces the
 > earlier HANDOFF.md. **No secrets in this file.** Tokens live only in TinaCloud
 > and in Cloudflare build settings.
 
@@ -29,10 +29,9 @@ built with **Astro + TinaCMS**. It replaces the hand-written 6-page HTML site.
 
 ## 2. Status
 
-- ✅ Home page ported, editable in Tina, and live editing works on the Workers preview.
-- ✅ `live-editing` branch merged into `main`.
-- ⬜ Check that `main` builds and that live editing works on the production `workers.dev` address.
-- ⬜ Port **About, Credentials, Services, Industries**, then **Contact** last (it has the Web3Forms form). Take the real text from the old `powercapital` repo.
+- ✅ Home page ported, with live editing on Workers (`live-editing` branch, merged).
+- ✅ **About page ported** (`port-about` branch, merged). It includes the 9-role career timeline. The Philosophy text was changed from "heavy-capital builds" to "data-center and cloud-infrastructure builds".
+- ⬜ Port **Credentials, Services, Industries**, then **Contact** last (it has the Web3Forms form). Take the real text from the old `powercapital` repo, now at `C:\dev\Powercapital`.
 - ⬜ Check the whole site on Workers, then do the cutover (§7).
 
 ## 3. Versions (what's installed and working)
@@ -56,22 +55,43 @@ astro.config.mjs        output 'static', cloudflare adapter (imageService passth
 wrangler.jsonc          Worker name "powercapital-cms" (must match the dashboard), nodejs_compat, previews: {}
 tina/config.ts          schema: "page" collection (content/pages/*.json) with a multi-template `blocks` list
 tina/tina-lock.json     MUST be committed whenever it changes (schema edits, Tina upgrades)
-content/pages/home.json Home content (SEO fields + ordered blocks)
+content/pages/*.json    page content (SEO fields + ordered blocks): home.json, about.json
 src/lib/tina/data.ts    getPage(slug) -> requestWithMetadata(client.queries.page(...))
 src/lib/tina/islands.ts editable-region registry ("page" island -> PageBlocks)
 src/pages/tina-island/[name].ts   editor-only on-demand route (prerender = false)
-src/pages/index.astro   loads the page via Tina, wraps <PageBlocks> in <TinaIsland ... primary>
+src/pages/index.astro   Home: loads the page via Tina, wraps <PageBlocks> in <TinaIsland ... primary>
+src/pages/about.astro   About: same pattern, slug "about", Person JSON-LD
 src/components/PageBlocks.astro   maps each block to a component (accepts _template or __typename)
 src/components/blocks/*.astro     section components; each text element has data-tina-field
+src/lib/inline.ts       inline(): **bold** in text fields -> <strong>; localImg(): fixes TinaCloud image paths
 scripts/copy-bridge.mjs dev-only: copies Tina's bridge.js into public/admin (see §6)
 public/assets/js/main.js site JS (nav, scroll reveal, contact form)
 ```
+
+### Section types (block templates) available
+
+| Template | Component | Used on | Notes |
+|---|---|---|---|
+| `hero` | Hero | Home | big hero with portrait, stats, badge |
+| `painPoints` | PainPoints | Home | eyebrow, heading, lead + cards |
+| `positioningBanner` | PositioningBanner | Home | navy/mint centered banner |
+| `process` | Process | Home | numbered steps + button |
+| `ctaBand` | CtaBand | Home, About | closing call to action |
+| `pageHero` | PageHero | About | interior-page title banner with breadcrumb |
+| `bio` | Bio | About | photo + paragraphs + checklist + button |
+| `timeline` | Timeline | About | career timeline (first item = green dot) |
+| `featureCards` | FeatureCards | About | icon cards (Font Awesome class) with background theme |
+| `textSection` | TextSection | About | centered eyebrow, heading, paragraph |
+
+Reuse these before creating new ones. Fields marked "use **bold**" accept `**text**` for emphasis.
+
+**Rule: every list must be a list of objects, not a list of plain strings.** Example: `{ type: "object", list: true, fields: [{ name: "text", ... }] }`, rendered with `tinaField(item, "text")`. Plain string lists (`type: "string", list: true`) can be clicked and saved, but **live typing doesn't refresh them**. We hit this on the About bio paragraphs and checklist.
 
 ### Adding a new page (pattern)
 1. Add any new block templates to `tina/config.ts` and register them in `PageBlocks.astro`.
 2. Create `content/pages/<slug>.json` with real text from the old site.
 3. Create `src/pages/<slug>.astro` by copying `index.astro`. Change it to `getPage("<slug>")` and `params={{ slug: "<slug>" }}`.
-4. Add `data-tina-field={tinaField(...)}` to every editable element in new components.
+4. Add `data-tina-field={tinaField(...)}` to every editable element in new components. Use `inline()` and `localImg()` from `src/lib/inline.ts` for bold text and images.
 5. Run `npm run dev` and test, then commit, **including `tina/tina-lock.json` if it changed**.
 
 ## 5. Day-to-day workflow
@@ -85,9 +105,10 @@ Saving in the local editor writes to `content/pages/*.json` on disk.
 
 **Branches:** one branch per piece of work (e.g. `port-about`), then push.
 1. TinaCloud → **Refresh Branches**.
-2. Get the branch's preview address from the Worker's **Previews** section.
-3. Add that address to TinaCloud → **Site URLs**, so the editor can log in there.
-4. Test, then merge into `main`:
+2. **Give the new preview its Tina settings.** On `port-about`, the first build failed until `NEXT_PUBLIC_TINA_CLIENT_ID` and `TINA_TOKEN` were added to **that branch's Preview** in Cloudflare. Cloudflare copies Previews Base settings only into *new* previews, and only if Base has them, so check **Previews Base** has both and new branches should inherit them. Until that's confirmed, check each new preview and add them there if the build says "Missing clientId, token". Then retry.
+3. Get the branch's preview address from the Worker's **Previews** section.
+4. Add that address to TinaCloud → **Site URLs**, so the editor can log in there.
+5. Test, then merge into `main`:
    `git checkout main; git pull; git merge <branch> --no-edit; git push`
 
 **Saving in the cloud editor** commits to that branch on GitHub and starts a rebuild. Run `git pull` before editing locally.
@@ -101,7 +122,8 @@ Saving in the local editor writes to `content/pages/*.json` on disk.
 | Cloud build: "Branch is not on TinaCloud" | Commit `tina/tina-lock.json`, push, then TinaCloud → Refresh Branches. To create the file the first time, run `npx tinacms dev`, because `tinacms build` checks TinaCloud first. |
 | Cloud build: 403 "not authorized to access branch" | The TinaCloud token's branch setting must be `*`. |
 | Cloud build: "local GraphQL schema doesn't match remote" | `tina/tina-lock.json` changed but wasn't committed. |
-| Cloud build: "Missing clientId, token" | Set them in the Worker's **Settings → Build → Build variables and secrets** for **both Production and Preview**. The runtime "Variables & Secrets" section doesn't count. |
+| Cloud build: "Missing clientId, token" | Set them in the Worker's **Settings → Build → Build variables and secrets** for **both Production and Preview**. The runtime "Variables & Secrets" section doesn't count. **A new branch preview may not inherit them:** add them to that preview (needed for `port-about`), and/or set them in **Previews Base** so future previews get them. Then retry. |
+| Live typing doesn't update some text, but clicking and saving work | That field is a plain string list. Change it to a list of objects with a `text` field (see §4). |
 | Editor: "TinaCloud config is missing for domain" | Add that exact address to TinaCloud → Site URLs. |
 | Editor: "nothing to edit" on a deployed site | The address is running code without live editing, e.g. `main` before a merge, or Pages. Check that `/tina-island/page?slug=...` returns 200. |
 | Local dev: `/admin/bridge.js` 404 | The @tinacms/astro dev route isn't reached in this setup. `scripts/copy-bridge.mjs` runs at the start of `npm run dev` and copies it into `public/admin`. |
@@ -124,7 +146,7 @@ Only after all 6 pages are ported and checked on Workers:
 
 - TinaCloud: delete old tokens and remove the `pages.dev` Site URLs.
 - Cloudflare: delete the old **Pages** project `powercapital-cms`, or turn off its builds. **Not the Worker with the same name.**
-- Update `README.md` and `PREVIEW_SETUP.md`. They still describe the Pages setup.
+- Check that **Previews Base** holds both Tina settings, so new branch previews don't need them added by hand.
 
 ## 9. Content reference (for porting)
 

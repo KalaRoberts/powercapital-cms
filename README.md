@@ -3,6 +3,7 @@
 The website for **Power Capital**, the fractional-CFO practice of John Roberts. It's built with **Astro**, with a **TinaCMS / TinaCloud** content layer, so non-technical editors can update the site in a visual editor. They click text on the page, type, and see the change straight away. No code is needed.
 
 **Live site (current):** https://powercapital.cloud is still served by the original static-HTML repo. This repo is in the build/preview phase and takes over the domain at cutover.
+**Pages ported:** Home, About. Still to do: Credentials, Services, Industries, Contact.
 **Stack:** Astro 7 (prerendered pages) · TinaCMS 3 + TinaCloud · `@tinacms/astro` live visual editing · Cloudflare Workers · vanilla CSS/JS
 
 > Maintainers: see **[PROJECT-NOTES.md](PROJECT-NOTES.md)** for versions, the full workflow, known issues and fixes, and the cutover checklist.
@@ -56,18 +57,20 @@ powercapital-cms/
 ├── tina/
 │   ├── config.ts           # TinaCMS schema: "page" collection + section block templates
 │   └── tina-lock.json      # generated; MUST be committed whenever it changes
-├── content/pages/          # editable page content as JSON (home.json, …)
+├── content/pages/          # editable page content as JSON (home.json, about.json, …)
 ├── scripts/copy-bridge.mjs # dev-only: puts Tina's bridge.js in public/admin
 ├── src/
 │   ├── layouts/BaseLayout.astro    # <head>, SEO, Open Graph, GA4, fonts, Header + Footer
 │   ├── lib/tina/data.ts            # Tina data loaders (requestWithMetadata)
 │   ├── lib/tina/islands.ts         # editable-region registry
+│   ├── lib/inline.ts               # **bold** support + TinaCloud image-path fix
 │   ├── components/
 │   │   ├── Header.astro · Footer.astro
 │   │   ├── PageBlocks.astro        # renders a page's blocks
-│   │   └── blocks/                 # one component per section type (Hero, PainPoints, …)
+│   │   └── blocks/                 # one component per section type (Hero, PainPoints, PageHero, Bio, Timeline, …)
 │   ├── pages/
 │   │   ├── index.astro             # Home
+│   │   ├── about.astro             # About
 │   │   └── tina-island/[name].ts   # editor-only on-demand route
 │   └── styles/global.css           # the design system
 └── public/
@@ -113,6 +116,8 @@ The Worker `powercapital-cms` is connected to this repo through Workers Builds:
   - `TINA_TOKEN`: a TinaCloud content token with branch access `*`
 
 These are needed while the site is **building**, so they go in the Build settings, not the runtime *Variables & Secrets*.
+
+**New branch previews:** a new branch's Preview may not pick these up automatically. If its first build fails with "Missing clientId, token", add both to that Preview, then retry. Setting them in **Previews Base** should let new previews inherit them.
 
 ---
 

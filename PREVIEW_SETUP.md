@@ -32,9 +32,10 @@ git commit -m "Port About page"
 git push -u origin port-about
 ```
 
-### 4. TinaCloud
+### 4. TinaCloud + Cloudflare settings
 1. **app.tina.io → Power Capital Site → Configuration → Refresh Branches.** Wait for the new branch to show as indexed.
-2. **Site URLs:** add the branch's preview address (step 5) so the editor can log in there.
+2. **Cloudflare:** if the branch's first build fails with "Missing clientId, token", add `NEXT_PUBLIC_TINA_CLIENT_ID` and `TINA_TOKEN` to **that branch's Preview** (or to **Previews Base**, so future branches inherit them), then retry. `port-about` needed this.
+3. **Site URLs:** add the branch's preview address (step 5) so the editor can log in there.
 
 ### 5. Check the Cloudflare preview
 1. **Workers & Pages → `powercapital-cms` (the Worker) → Previews.** Open the branch's preview address.
@@ -61,7 +62,7 @@ git push
 | "Branch is not on TinaCloud" | Commit `tina/tina-lock.json`, push, then **Refresh Branches**. |
 | 403 "not authorized to access branch" | The TinaCloud token's branch access must be `*`. |
 | "local GraphQL schema doesn't match remote" | `tina/tina-lock.json` changed but wasn't committed. |
-| "Missing clientId, token" | Set both variables in *Settings → Build → Build variables and secrets* for **Production and Preview**. |
+| "Missing clientId, token" | Set both variables in *Settings → Build → Build variables and secrets* for **Production and Preview**. A new branch preview may need them added to it directly (or via Previews Base). |
 | Editor: "config is missing for domain" | Add that exact address to TinaCloud **Site URLs**. |
 
 More in **PROJECT-NOTES.md §6**.
