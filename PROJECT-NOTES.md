@@ -20,6 +20,18 @@ built with **Astro + TinaCMS**. It replaces the hand-written 6-page HTML site.
 | TinaCloud project | "Power Capital Site", client ID `aa8e00fd-4923-40cc-abc5-791d41d0f1d7` (public) |
 | GA4 | `G-ZZ170WEYFW` (in `BaseLayout.astro`) |
 
+### Who owns what
+
+| Thing | Owner | Kala's access |
+|---|---|---|
+| Domain `powercapital.cloud` + its DNS | **Client** (their Cloudflare account) | Admin **only during setup**; removed at handover |
+| Cloudflare Worker `powercapital-cms` (`jr-1791.workers.dev`) | **Client** (same Cloudflare account) | Admin during setup; removed at handover |
+| GitHub repo `KalaRoberts/powercapital-cms` | **Kala** | Owner; client gets Write access |
+| Old GitHub Pages repo `KalaRoberts/powercapital` (rollback) | **Kala** | Owner |
+| TinaCloud project | **Client** (after Phase 2 of CUTOVER-PLAN.md) | Optional collaborator seat on the client's project |
+
+After handover, anything in Cloudflare (DNS, custom domains, Worker build settings and secrets, build logs, retries, rollback) is done by the **client**, or by Kala only if the client re-invites her.
+
 ### Decisions
 - **Framework:** Astro. Pages are prerendered (static).
 - **CMS:** TinaCMS + TinaCloud, with **live visual editing** (click text on the page, edit, see it update as you type).

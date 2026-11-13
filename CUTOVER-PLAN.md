@@ -1,6 +1,8 @@
 # Full-Site Check & Cutover Plan
 
-> Goal: replace the old GitHub Pages site at **powercapital.cloud** with the new Astro + TinaCMS site on Cloudflare Workers, and hand editing over to the client. Work top to bottom. **Don't touch DNS until Phases 1–3 are done.**
+> Goal: replace the old GitHub Pages site at **powercapital.cloud** with the new Astro + TinaCMS site on Cloudflare Workers, and hand editing over to the client.
+>
+> **Ownership:** the client owns `powercapital.cloud` and the Cloudflare account (DNS + the Worker). Kala is a temporary admin for this setup and is removed at handover (Phase 6). The GitHub repo stays in Kala's account. Work top to bottom. **Don't touch DNS until Phases 1–3 are done.**
 
 ---
 
@@ -139,7 +141,31 @@ Both work after step 2. Canonical tags point to `https://powercapital.cloud`, so
 
 ---
 
+## Phase 6 — Cloudflare handover (Kala's admin access ends)
+
+The client owns `powercapital.cloud` and the Cloudflare account, including the Worker. Kala was added as an admin only for this setup and is removed at handover. **Do everything that needs Cloudflare access before that.**
+
+Before Kala is removed:
+- [ ] Phases 0–5 done; the live domain is served by the Worker and checked.
+- [ ] Phase 2 done: the client's TinaCloud client ID and token are in **Worker → Settings → Build → Build variables and secrets** for **Production and Previews Base**, and a build has passed with them.
+- [ ] **Move the Workers Builds API token to the client's user.** Cloudflare's docs say Workers Builds uses a **user** API token, generated for whoever set up builds, which is Kala. If Kala's user leaves the account, builds may stop working; this isn't confirmed. Have the **client, logged in as themselves**, go to Worker → Settings → Build → **API token** → create a new token, save it, then push any commit and confirm the build still passes.
+- [ ] Confirm the **GitHub connection** still builds. It runs through the Cloudflare GitHub app installed on Kala's GitHub account (the repo stays with Kala), so it should keep working; a test push after the token swap proves it.
+- [ ] Remove any Cloudflare API tokens Kala created personally for this account (My Profile → API Tokens), if any.
+- [ ] Give the client a short "Cloudflare for you" note:
+  - Where build logs are: Worker → Deployments → View build history
+  - How to retry a failed build
+  - The two build secrets (`NEXT_PUBLIC_TINA_CLIENT_ID`, `TINA_TOKEN`) and where they live
+  - That DNS records other than the site's (email MX and TXT records) must be left alone
+  - The rollback section below, in case it's ever needed
+- [ ] The client removes Kala as an admin (Manage Account → Members).
+
+After handover, Kala can still change site code and content through GitHub (she owns the repo), and pushes still deploy. She can no longer see build logs, change secrets, edit DNS, or run the rollback; the client does those, or re-invites her temporarily.
+
+---
+
 ## Rollback (if something goes badly wrong)
+
+Needs Cloudflare access: after handover, the **client** does steps 1–2 (or re-invites Kala). Step 3 is in Kala's GitHub account.
 1. Worker → Domains & Routes → remove the `powercapital.cloud` and `www` custom domains.
 2. DNS: re-add the 4 GitHub Pages `A` records and the `www` CNAME (from your Phase 3 screenshot), all **DNS only (grey cloud)**.
 3. Old `powercapital` repo → Settings → Pages → re-enter `powercapital.cloud` as the custom domain; enforce HTTPS.
