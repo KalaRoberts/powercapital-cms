@@ -1,0 +1,38 @@
+---
+import { tinaField } from "@tinacms/astro/tina-field";
+import { inline, localImg } from "../../lib/inline";
+const { eyebrow, portrait, portraitAlt, paragraphs = [], checklist = [], ctaLabel, ctaHref, block } = Astro.props as any;
+const f = (n: string) => (block ? tinaField(block, n) : undefined);
+const isExternal = (h?: string) => !!h && /^https?:/.test(h);
+const isLinkedIn = (h?: string) => !!h && h.includes("linkedin.com");
+---
+<section>
+  <div class="container bio">
+    {portrait && (
+      <div class="bio-portrait reveal">
+        <img src={localImg(portrait)} alt={portraitAlt} data-tina-field={f("portrait")} />
+      </div>
+    )}
+    <div class="reveal">
+      {eyebrow && <span class="eyebrow" data-tina-field={f("eyebrow")}>{eyebrow}</span>}
+      {(paragraphs ?? []).map((p: any) => (
+        <p data-tina-field={tinaField(p, "text")} set:html={inline(p?.text)} />
+      ))}
+      {checklist && checklist.length > 0 && (
+        <ul class="credlist">
+          {checklist.map((c: any) => (
+            <li><span class="tick"><i class="fa-solid fa-circle-check"></i></span> <span data-tina-field={tinaField(c, "text")}>{c?.text}</span></li>
+          ))}
+        </ul>
+      )}
+      {ctaLabel && (
+        <div style="margin-top:28px;display:flex;gap:14px;flex-wrap:wrap">
+          <a href={ctaHref} class="btn btn-dark" data-tina-field={f("ctaLabel")}
+             target={isExternal(ctaHref) ? "_blank" : undefined} rel={isExternal(ctaHref) ? "noopener" : undefined}>
+            {isLinkedIn(ctaHref) && <i class="fa-brands fa-linkedin"></i>} {ctaLabel}
+          </a>
+        </div>
+      )}
+    </div>
+  </div>
+</section>

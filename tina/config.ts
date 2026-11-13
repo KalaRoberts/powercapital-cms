@@ -107,6 +107,88 @@ const ctaBandTemplate = {
   ],
 };
 
+// ---- Interior-page block templates (About, and reused by later pages) ----
+// Text fields accept **bold** for emphasis.
+const pageHeroTemplate = {
+  name: "pageHero",
+  label: "Page Title Banner",
+  fields: [
+    { type: "string", name: "breadcrumb", label: "Breadcrumb label (after 'Home /')" },
+    { type: "string", name: "heading", label: "Heading" },
+    { type: "string", name: "body", label: "Intro text", ui: { component: "textarea" } },
+  ],
+};
+
+const bioTemplate = {
+  name: "bio",
+  label: "Bio (photo + text)",
+  fields: [
+    { type: "image", name: "portrait", label: "Portrait image" },
+    { type: "string", name: "portraitAlt", label: "Portrait alt text" },
+    { type: "string", name: "eyebrow", label: "Eyebrow" },
+    {
+      type: "object", name: "paragraphs", label: "Paragraphs", list: true,
+      ui: { itemProps: (i: any) => ({ label: (i?.text || "Paragraph").slice(0, 48) }) },
+      fields: [{ type: "string", name: "text", label: "Text (use **bold** for emphasis)", ui: { component: "textarea" } }],
+    },
+    {
+      type: "object", name: "checklist", label: "Checklist items", list: true,
+      ui: { itemProps: (i: any) => ({ label: i?.text || "Item" }) },
+      fields: [{ type: "string", name: "text", label: "Text" }],
+    },
+    { type: "string", name: "ctaLabel", label: "Button label" },
+    { type: "string", name: "ctaHref", label: "Button link" },
+  ],
+};
+
+const timelineTemplate = {
+  name: "timeline",
+  label: "Career Timeline",
+  fields: [
+    { type: "string", name: "eyebrow", label: "Eyebrow" },
+    { type: "string", name: "heading", label: "Heading" },
+    { type: "string", name: "lead", label: "Lead text" },
+    {
+      type: "object", name: "items", label: "Roles (first = current, green dot)", list: true,
+      ui: { itemProps: (i: any) => ({ label: [i?.date, i?.title].filter(Boolean).join(" · ") || "Role" }) },
+      fields: [
+        { type: "string", name: "date", label: "Dates" },
+        { type: "string", name: "title", label: "Title" },
+        { type: "string", name: "body", label: "Description (use **bold** for emphasis)", ui: { component: "textarea" } },
+      ],
+    },
+  ],
+};
+
+const featureCardsTemplate = {
+  name: "featureCards",
+  label: "Feature Cards (icons)",
+  fields: [
+    { type: "string", name: "theme", label: "Background", options: ["soft", "mint", "plain"] },
+    { type: "string", name: "eyebrow", label: "Eyebrow" },
+    { type: "string", name: "heading", label: "Heading" },
+    {
+      type: "object", name: "cards", label: "Cards", list: true,
+      ui: { itemProps: (i: any) => ({ label: i?.title || "Card" }) },
+      fields: [
+        { type: "string", name: "icon", label: "Icon (Font Awesome class, e.g. fa-solid fa-server)" },
+        { type: "string", name: "title", label: "Title" },
+        { type: "string", name: "body", label: "Body", ui: { component: "textarea" } },
+      ],
+    },
+  ],
+};
+
+const textSectionTemplate = {
+  name: "textSection",
+  label: "Text Section",
+  fields: [
+    { type: "string", name: "eyebrow", label: "Eyebrow" },
+    { type: "string", name: "heading", label: "Heading" },
+    { type: "string", name: "body", label: "Body (use **bold** for emphasis)", ui: { component: "textarea" } },
+  ],
+};
+
 export default defineConfig({
   clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID || "",
   token: process.env.TINA_TOKEN || "",
@@ -147,6 +229,11 @@ export default defineConfig({
               positioningBannerTemplate,
               processTemplate,
               ctaBandTemplate,
+              pageHeroTemplate,
+              bioTemplate,
+              timelineTemplate,
+              featureCardsTemplate,
+              textSectionTemplate,
             ],
             ui: {
               visualSelector: true,

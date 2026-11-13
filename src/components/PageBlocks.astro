@@ -4,6 +4,11 @@ import PainPoints from "./blocks/PainPoints.astro";
 import PositioningBanner from "./blocks/PositioningBanner.astro";
 import Process from "./blocks/Process.astro";
 import CtaBand from "./blocks/CtaBand.astro";
+import PageHero from "./blocks/PageHero.astro";
+import Bio from "./blocks/Bio.astro";
+import Timeline from "./blocks/Timeline.astro";
+import FeatureCards from "./blocks/FeatureCards.astro";
+import TextSection from "./blocks/TextSection.astro";
 
 // Tina returns __typename like "PageBlocksHero"; the JSON uses _template "hero".
 const BLOCKS: Record<string, any> = {
@@ -12,6 +17,11 @@ const BLOCKS: Record<string, any> = {
   positioningBanner: PositioningBanner,
   process: Process,
   ctaBand: CtaBand,
+  pageHero: PageHero,
+  bio: Bio,
+  timeline: Timeline,
+  featureCards: FeatureCards,
+  textSection: TextSection,
 };
 const keyOf = (b: any): string => {
   if (b?._template) return b._template;

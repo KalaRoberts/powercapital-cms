@@ -1,0 +1,136 @@
+{
+  "title": "Power Capital: About",
+  "description": "John Roberts is a fractional CFO with 16 years as a finance professional — including 15 years at AWS and Amazon.com, from Financial Analyst to Senior Finance Manager.",
+  "ogTitle": "Power Capital: About",
+  "ogDescription": "16 years as a finance professional, including 15 at AWS and Amazon — meet John Roberts, President of Power Capital.",
+  "blocks": [
+    {
+      "breadcrumb": "About",
+      "heading": "Meet our President",
+      "body": "A finance partner forged in Amazon's hypergrowth — now bringing that discipline to growing companies as their fractional CFO.",
+      "_template": "pageHero"
+    },
+    {
+      "portrait": "/assets/img/john-roberts.jpg",
+      "portraitAlt": "John Roberts, Fractional CFO",
+      "eyebrow": "Where it began",
+      "paragraphs": [
+        {
+          "text": "John Roberts is a trusted finance partner with 16 years as a finance professional — including 15 years solving large-scale and highly ambiguous problems at AWS and Amazon.com. He has a proven ability to scale alongside Amazon during extreme growth — a period in which the company's market capitalization increased **4,241%, from $56.9B to $2.47T**. That environment demands rigor, speed, and judgment under uncertainty, and it's the foundation John brings to every engagement.,Today, based in Raleigh, North Carolina, John is President of **Power Capital Consulting**, partnering with hyper-scale data center developers and cloud infrastructure investors to sharpen their financial and accounting processes — and bringing that same CFO-level discipline to growing companies."
+        }
+      ],
+      "checklist": [
+        {
+          "text": "Financial system design"
+        },
+        {
+          "text": "Data-center & server infrastructure finance"
+        },
+        {
+          "text": "Supply chain & operations finance"
+        },
+        {
+          "text": "Full P&L ownership"
+        },
+        {
+          "text": "Forecasting & financial operations"
+        },
+        {
+          "text": "Financial planning & analysis (FP&A)"
+        }
+      ],
+      "ctaLabel": "View LinkedIn",
+      "ctaHref": "https://www.linkedin.com/in/jmroberts67/",
+      "_template": "bio"
+    },
+    {
+      "eyebrow": "Career history",
+      "heading": "Sixteen years — billions in scope.",
+      "lead": "From Amazon to Fractional CFO.",
+      "items": [
+        {
+          "date": "2025 – Present",
+          "title": "President — Power Capital Consulting",
+          "body": "Partners with hyperscale data-center developers (PowerHouse) and cloud-infrastructure investors — designing compliance and audit functions for development costs, leading real-estate development software implementation (Northspyre), and driving scalable, profitable process improvement."
+        },
+        {
+          "date": "2024 – 2025",
+          "title": "AWS Accounting Consultant",
+          "body": "Led cross-functional automation projects with CFO sponsorship — full data-center asset-lifecycle automation, controllership for a new power-generator manufacturing process, and accelerating construction timelines for AI-driven mega-campus demand."
+        },
+        {
+          "date": "2022 – 2024",
+          "title": "Senior Finance Manager — AWS Infrastructure Finance (BPM)",
+          "body": "Liaison between Finance, Accounting, and technical teams on large-scale projects — for scale, AWS held $108.5B in assets and $24.8B in net PP&E additions in 2023. Exceeded the CFO's goal for fixed-asset PO-coding accuracy with a solution still in use years later."
+        },
+        {
+          "date": "2019 – 2022",
+          "title": "Senior Finance Manager — AWS Data Center Infrastructure",
+          "body": "Led the finance team for data-center capex — growing from $1.5B to $3B/yr on AWS's largest commercial cluster, then scaling to lead **global DC capex of $12B/yr** with a team of five."
+        },
+        {
+          "date": "2018 – 2019",
+          "title": "Product CFO — AWS Networking (ELB, NAT Gateway, PrivateLink, EC2)",
+          "body": "Full P&L ownership for multiple services generating over $1B in revenue — pricing strategy, multi-year forecasting, and cost-allocation methodology."
+        },
+        {
+          "date": "2015 – 2018",
+          "title": "Finance Manager — AWS Server Infrastructure, Supply Chain & Procurement",
+          "body": "Led a team of five supporting multi-billion-dollar server procurement and supply chain (incl. Annapurna) — modeling a multi-billion-dollar server-manufacturing initiative and leading multi-generational CPU pricing negotiations with Intel and others."
+        },
+        {
+          "date": "2013 – 2015",
+          "title": "Financial Analyst II — AWS Central FP&A",
+          "body": "Built the automated Weekly Business Review consolidating inputs from thirty-five teams for senior executives — including then-AWS-CEO Andy Jassy."
+        },
+        {
+          "date": "2012 – 2013",
+          "title": "Financial Analyst II — Amazon Accounts Receivable, Business Intelligence",
+          "body": "Led the establishment of a global Business Intelligence team, delivering online analytic dashboards and ad hoc reporting across nine countries — driving data-driven insights, operational efficiency, and customer satisfaction."
+        },
+        {
+          "date": "2010 – 2012",
+          "title": "Financial Analyst — Amazon Accounts Receivable, Vendor Dispute & Operations",
+          "body": "Led the development and implementation of scalable best practices for processing vendor disputes, managing the transition of vendor dispute work to an offshore team in India — overseeing training, escalations, and work quality for US-based contractors and the Hyderabad team."
+        }
+      ],
+      "_template": "timeline"
+    },
+    {
+      "theme": "soft",
+      "eyebrow": "Areas of depth",
+      "heading": "What our experience brings to you.",
+      "cards": [
+        {
+          "icon": "fa-solid fa-diagram-project",
+          "title": "Financial System Design",
+          "body": "Building the reporting infrastructure and processes that let a company trust its numbers and move fast."
+        },
+        {
+          "icon": "fa-solid fa-server",
+          "title": "Infrastructure & Supply Chain",
+          "body": "Deep experience in data-center, server infrastructure, and supply chain finance — capital-intensive, operationally complex."
+        },
+        {
+          "icon": "fa-solid fa-scale-balanced",
+          "title": "Full P&L Ownership",
+          "body": "Owning the economics of products end to end — from forecasting and pricing to margin and growth."
+        }
+      ],
+      "_template": "featureCards"
+    },
+    {
+      "eyebrow": "Philosophy",
+      "heading": "Precision is a discipline, not an afterthought.",
+      "body": "In data-center and cloud-infrastructure builds, finance isn't bookkeeping — it's protection. We architect the controls, draw schedules, and covenant reporting that keep a project funded and compliant, then translate the numbers into the decisions that keep it moving.",
+      "_template": "textSection"
+    },
+    {
+      "heading": "Let's talk about your business.",
+      "body": "Contact us and see what a CFO partner can do for you.",
+      "ctaLabel": "Contact Us",
+      "ctaHref": "/contact",
+      "_template": "ctaBand"
+    }
+  ]
+}

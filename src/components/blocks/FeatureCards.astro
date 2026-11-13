@@ -1,0 +1,23 @@
+---
+import { tinaField } from "@tinacms/astro/tina-field";
+const { eyebrow, heading, cards = [], theme = "soft", block } = Astro.props as any;
+const f = (n: string) => (block ? tinaField(block, n) : undefined);
+const sectionClass = theme === "soft" ? "bg-soft" : theme === "mint" ? "bg-mint" : "";
+---
+<section class={sectionClass}>
+  <div class="container">
+    <div class="section-head center">
+      {eyebrow && <span class="eyebrow" data-tina-field={f("eyebrow")}>{eyebrow}</span>}
+      {heading && <h2 data-tina-field={f("heading")}>{heading}</h2>}
+    </div>
+    <div class="grid grid-3">
+      {(cards ?? []).map((c: any) => (
+        <div class="card reveal">
+          {c.icon && <div class="ico" data-tina-field={tinaField(c, "icon")}><i class={c.icon}></i></div>}
+          <h3 data-tina-field={tinaField(c, "title")}>{c.title}</h3>
+          <p data-tina-field={tinaField(c, "body")}>{c.body}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

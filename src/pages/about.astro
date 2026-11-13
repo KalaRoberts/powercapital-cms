@@ -1,0 +1,36 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import TinaIsland from "@tinacms/astro/TinaIsland.astro";
+import PageBlocks from "../components/PageBlocks.astro";
+import { getPage } from "../lib/tina/data";
+import { PAGE_WRAPPER } from "../lib/tina/islands";
+
+const result = await getPage("about");
+const page: any = result.data.page;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "John Roberts",
+  jobTitle: "President & Fractional CFO",
+  worksFor: { "@type": "Organization", name: "Power Capital", url: "https://powercapital.cloud" },
+  url: "https://powercapital.cloud/about",
+  sameAs: "https://www.linkedin.com/in/jmroberts67/",
+  alumniOf: ["University of Washington", "Appalachian State University"],
+  description:
+    "Finance professional with 16 years of experience, including 15 years at AWS and Amazon leading data-center and cloud-infrastructure finance.",
+};
+---
+<BaseLayout
+  title={page.title}
+  description={page.description}
+  path="/about"
+  ogTitle={page.ogTitle}
+  ogDescription={page.ogDescription}
+  active="about"
+  jsonLd={jsonLd}
+>
+  <TinaIsland name="page" wrapper={PAGE_WRAPPER} params={{ slug: "about" }} primary>
+    <PageBlocks page={page} />
+  </TinaIsland>
+</BaseLayout>
