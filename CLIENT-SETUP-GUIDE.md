@@ -37,14 +37,28 @@ You'll create two free accounts:
 4. Choose the repository **powercapital-cms**.
 5. Fill in the project settings:
    - **Project name:** `Power Capital Site`
-   - **Site URLs:** add each of these on its own line. They tell TinaCloud which web addresses can use the editor.
+   - **Site URLs:** these tell TinaCloud which web addresses can use the editor. Add each one as its own Site URL entry, using the copy button on each box.
+
      ```
      http://localhost:4321
+     ```
+
+     ```
      https://powercapital-cms.jr-1791.workers.dev
+     ```
+
+     ```
      https://*-powercapital-cms.jr-1791.workers.dev
+     ```
+
+     ```
      https://powercapital.cloud
+     ```
+
+     ```
      https://www.powercapital.cloud
      ```
+
    - **Advanced settings → Path to Tina folder:** leave it **blank**.
 6. Click **Save** or **Create project**.
 7. Open the **Media** tab and click **Sync Media**. This lets the editor show the site's images.
@@ -69,11 +83,11 @@ Kala needs these to connect the website to your new project:
 
 ## Step 5: (Optional) Add Kala to your project
 
-So Kala can still help with the editor later:
-1. In your TinaCloud project, open **Collaborators** (or **User management**).
-2. Invite Kala's email: **karoberts2014@gmail.com**.
+TinaCloud accounts stay free if they have 2 users or fewer. You are one of those users. If you add Kala, she will take the last free seat. If you need someone else to have that seat, talk to Kala about how to coordinate without giving it to her.
 
-Your free plan includes 2 users: you and Kala.
+If you want to give the second seat to Kala, follow these steps:
+- In your TinaCloud project, open **Collaborators** (or **User management**).
+- Invite Kala's email: **karoberts2014@gmail.com**.
 
 ## Step 6: Try the editor (after Kala confirms the connection)
 
