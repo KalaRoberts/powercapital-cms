@@ -1,0 +1,25 @@
+---
+import { tinaField } from "@tinacms/astro/tina-field";
+import { inline } from "../../lib/inline";
+const { eyebrow, heading, lead, quotes = [], block } = Astro.props as any;
+const f = (n: string) => (block ? tinaField(block, n) : undefined);
+---
+<section>
+  <div class="container">
+    <div class="section-head center">
+      {eyebrow && <span class="eyebrow" data-tina-field={f("eyebrow")}>{eyebrow}</span>}
+      {heading && <h2 data-tina-field={f("heading")}>{heading}</h2>}
+      {lead && <p class="lead mx-auto center" data-tina-field={f("lead")}>{lead}</p>}
+    </div>
+    <div class="grid grid-3">
+      {(quotes ?? []).map((q: any) => (
+        <div class="quote reveal">
+          <span class="mark">&ldquo;</span>
+          <p data-tina-field={tinaField(q, "quote")} set:html={inline(q.quote)} />
+          <div class="who" data-tina-field={tinaField(q, "name")}>{q.name}</div>
+          <div class="role" data-tina-field={tinaField(q, "role")}>{q.role}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

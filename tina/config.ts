@@ -165,15 +165,18 @@ const featureCardsTemplate = {
   label: "Feature Cards (icons)",
   fields: [
     { type: "string", name: "theme", label: "Background", options: ["soft", "mint", "plain"] },
+    { type: "string", name: "columns", label: "Columns", options: ["3", "2"] },
     { type: "string", name: "eyebrow", label: "Eyebrow" },
     { type: "string", name: "heading", label: "Heading" },
+    { type: "string", name: "lead", label: "Lead text (optional)" },
     {
       type: "object", name: "cards", label: "Cards", list: true,
       ui: { itemProps: (i: any) => ({ label: i?.title || "Card" }) },
       fields: [
         { type: "string", name: "icon", label: "Icon (Font Awesome class, e.g. fa-solid fa-server)" },
         { type: "string", name: "title", label: "Title" },
-        { type: "string", name: "body", label: "Body", ui: { component: "textarea" } },
+        { type: "string", name: "subtitle", label: "Subtitle (optional, grey line under title)" },
+        { type: "string", name: "body", label: "Body (use **bold** for emphasis)", ui: { component: "textarea" } },
       ],
     },
   ],
@@ -186,6 +189,25 @@ const textSectionTemplate = {
     { type: "string", name: "eyebrow", label: "Eyebrow" },
     { type: "string", name: "heading", label: "Heading" },
     { type: "string", name: "body", label: "Body (use **bold** for emphasis)", ui: { component: "textarea" } },
+  ],
+};
+
+const recommendationsTemplate = {
+  name: "recommendations",
+  label: "Recommendations (quotes)",
+  fields: [
+    { type: "string", name: "eyebrow", label: "Eyebrow" },
+    { type: "string", name: "heading", label: "Heading" },
+    { type: "string", name: "lead", label: "Lead text" },
+    {
+      type: "object", name: "quotes", label: "Quotes", list: true,
+      ui: { itemProps: (i: any) => ({ label: i?.name || "Quote" }) },
+      fields: [
+        { type: "string", name: "quote", label: "Quote", ui: { component: "textarea" } },
+        { type: "string", name: "name", label: "Name" },
+        { type: "string", name: "role", label: "Role / title" },
+      ],
+    },
   ],
 };
 
@@ -234,6 +256,7 @@ export default defineConfig({
               timelineTemplate,
               featureCardsTemplate,
               textSectionTemplate,
+              recommendationsTemplate,
             ],
             ui: {
               visualSelector: true,

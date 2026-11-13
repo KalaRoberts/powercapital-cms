@@ -9,6 +9,7 @@ import Bio from "./blocks/Bio.astro";
 import Timeline from "./blocks/Timeline.astro";
 import FeatureCards from "./blocks/FeatureCards.astro";
 import TextSection from "./blocks/TextSection.astro";
+import Recommendations from "./blocks/Recommendations.astro";
 
 // Tina returns __typename like "PageBlocksHero"; the JSON uses _template "hero".
 const BLOCKS: Record<string, any> = {
@@ -22,6 +23,7 @@ const BLOCKS: Record<string, any> = {
   timeline: Timeline,
   featureCards: FeatureCards,
   textSection: TextSection,
+  recommendations: Recommendations,
 };
 const keyOf = (b: any): string => {
   if (b?._template) return b._template;

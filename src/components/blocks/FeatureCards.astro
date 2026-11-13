@@ -1,21 +1,25 @@
 ---
 import { tinaField } from "@tinacms/astro/tina-field";
-const { eyebrow, heading, cards = [], theme = "soft", block } = Astro.props as any;
+import { inline } from "../../lib/inline";
+const { eyebrow, heading, lead, cards = [], theme = "soft", columns = "3", block } = Astro.props as any;
 const f = (n: string) => (block ? tinaField(block, n) : undefined);
 const sectionClass = theme === "soft" ? "bg-soft" : theme === "mint" ? "bg-mint" : "";
+const two = String(columns) === "2";
 ---
 <section class={sectionClass}>
   <div class="container">
-    <div class="section-head center">
+    <div class={two ? "section-head center mx-auto" : "section-head center"}>
       {eyebrow && <span class="eyebrow" data-tina-field={f("eyebrow")}>{eyebrow}</span>}
       {heading && <h2 data-tina-field={f("heading")}>{heading}</h2>}
+      {lead && <p class="lead mx-auto center" data-tina-field={f("lead")}>{lead}</p>}
     </div>
-    <div class="grid grid-3">
+    <div class={two ? "grid grid-2" : "grid grid-3"} style={two ? "max-width:860px;margin:0 auto" : undefined}>
       {(cards ?? []).map((c: any) => (
         <div class="card reveal">
           {c.icon && <div class="ico" data-tina-field={tinaField(c, "icon")}><i class={c.icon}></i></div>}
           <h3 data-tina-field={tinaField(c, "title")}>{c.title}</h3>
-          <p data-tina-field={tinaField(c, "body")}>{c.body}</p>
+          {c.subtitle && <p style="color:var(--muted);font-size:.9rem;margin-bottom:10px" data-tina-field={tinaField(c, "subtitle")}>{c.subtitle}</p>}
+          <p data-tina-field={tinaField(c, "body")} set:html={inline(c.body)} />
         </div>
       ))}
     </div>
