@@ -1,0 +1,73 @@
+{
+  "title": "Power Capital: Industries",
+  "description": "Power Capital brings CFO-level discipline to capital-intensive, build-heavy businesses — data centers, construction, and real estate.",
+  "ogTitle": "Power Capital: Industries",
+  "ogDescription": "Data center construction and real estate",
+  "blocks": [
+    {
+      "breadcrumb": "Industries",
+      "heading": "Who we work with",
+      "body": "Power Capital brings CFO-level discipline to capital-intensive businesses — data center construction and real estate — and growing companies that need a seasoned finance partner.",
+      "_template": "pageHero"
+    },
+    {
+      "theme": "plain",
+      "columns": "3",
+      "cardStyle": "industry",
+      "eyebrow": "Industries served",
+      "heading": "Data center capital & complex builds.",
+      "cards": [
+        {
+          "icon": "fa-solid fa-database",
+          "title": "Data Centers & Hyperscale",
+          "body": "Development-cost controllership, capex forecasting, and metric reporting."
+        },
+        {
+          "icon": "fa-solid fa-helmet-safety",
+          "title": "Construction & Development",
+          "body": "Project-cost tracking, draw management, and audit-ready controls for ground-up development."
+        },
+        {
+          "icon": "fa-solid fa-building",
+          "title": "Real Estate & Infrastructure",
+          "body": "Underwriting support, appraisal-informed valuation, and capital planning for real-estate and infrastructure projects."
+        }
+      ],
+      "_template": "featureCards"
+    },
+    {
+      "theme": "mint",
+      "columns": "2",
+      "centered": true,
+      "eyebrow": "Is it time?",
+      "heading": "Common signs you're ready for a fractional CFO.",
+      "cards": [
+        {
+          "title": "Capital Draw Schedules and Cash Flow Gaps Are Outpacing Forecasting",
+          "body": "If cash flow management feels like a reactive scramble—where funding construction milestones, vendor invoices, or contractor pay applications consistently bumps up against delayed financing tranches or working capital squeezes—you lack the forward-looking liquidity modeling required for cloud infrastructure."
+        },
+        {
+          "title": "Complex Debt Stacks and Investor Structures Require Rigorous Modeling",
+          "body": "When institutional investors, lenders, or board members ask granular questions about debt service coverage ratios (DSCR), capital stack optimization, internal rates of return (IRR) across different phases, or scenario stress-testing, and your internal team cannot produce institutional-grade financial models on demand."
+        },
+        {
+          "title": "Job-Level Cost Overruns and Scope Creep Are Eroding Margins Silently",
+          "body": "You know top-line project volume is high, but true, project-by-project profitability remains murky until the build is fully closed out. If cost overruns or unrecovered change orders are discovered too late to correct—and you lack real-time tracking of committed costs versus actuals—your gross margins are at high risk."
+        },
+        {
+          "title": "Leadership Is Bogged Down in Financial Structuring Instead of Growth",
+          "body": "The founders, managing directors, or technical leads are spending their days buried in complex financial spreadsheets, trying to untangle tax implications, or manually structuring project pro formas instead of focusing on strategic pipeline expansion and site acquisition."
+        }
+      ],
+      "note": "Earlier is usually better than later.",
+      "_template": "painPoints"
+    },
+    {
+      "heading": "Don't see your industry? Let's talk anyway.",
+      "body": "The fundamentals — cash, forecasting, controls, and capital — translate across industries. Send us a message and we'll tell you if it's a fit.",
+      "ctaLabel": "Contact Us",
+      "ctaHref": "/contact",
+      "_template": "ctaBand"
+    }
+  ]
+}

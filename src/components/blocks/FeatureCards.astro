@@ -1,7 +1,8 @@
 ---
 import { tinaField } from "@tinacms/astro/tina-field";
 import { inline } from "../../lib/inline";
-const { eyebrow, heading, lead, cards = [], theme = "soft", columns = "3", block } = Astro.props as any;
+const { eyebrow, heading, lead, cards = [], theme = "soft", columns = "3", cardStyle = "card", block } = Astro.props as any;
+const cardClass = cardStyle === "industry" ? "industry reveal" : "card reveal";
 const f = (n: string) => (block ? tinaField(block, n) : undefined);
 const sectionClass = theme === "soft" ? "bg-soft" : theme === "mint" ? "bg-mint" : "";
 const two = String(columns) === "2";
@@ -15,7 +16,7 @@ const two = String(columns) === "2";
     </div>
     <div class={two ? "grid grid-2" : "grid grid-3"} style={two ? "max-width:860px;margin:0 auto" : undefined}>
       {(cards ?? []).map((c: any) => (
-        <div class="card reveal">
+        <div class={cardClass}>
           {c.icon && <div class="ico" data-tina-field={tinaField(c, "icon")}><i class={c.icon}></i></div>}
           <h3 data-tina-field={tinaField(c, "title")}>{c.title}</h3>
           {c.subtitle && <p style="color:var(--muted);font-size:.9rem;margin-bottom:10px" data-tina-field={tinaField(c, "subtitle")}>{c.subtitle}</p>}

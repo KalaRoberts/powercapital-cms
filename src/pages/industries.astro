@@ -1,0 +1,22 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import TinaIsland from "@tinacms/astro/TinaIsland.astro";
+import PageBlocks from "../components/PageBlocks.astro";
+import { getPage } from "../lib/tina/data";
+import { PAGE_WRAPPER } from "../lib/tina/islands";
+
+const result = await getPage("industries");
+const page: any = result.data.page;
+---
+<BaseLayout
+  title={page.title}
+  description={page.description}
+  path="/industries"
+  ogTitle={page.ogTitle}
+  ogDescription={page.ogDescription}
+  active="industries"
+>
+  <TinaIsland name="page" wrapper={PAGE_WRAPPER} params={{ slug: "industries" }} primary>
+    <PageBlocks page={page} />
+  </TinaIsland>
+</BaseLayout>

@@ -51,6 +51,9 @@ const painPointsTemplate = {
   name: "painPoints",
   label: "Pain Points",
   fields: [
+    { type: "string", name: "theme", label: "Background", options: ["plain", "mint", "soft"] },
+    { type: "string", name: "columns", label: "Columns", options: ["3", "2"] },
+    { type: "boolean", name: "centered", label: "Center the heading" },
     { type: "string", name: "eyebrow", label: "Eyebrow" },
     { type: "string", name: "heading", label: "Heading" },
     { type: "string", name: "lead", label: "Lead paragraph", ui: { component: "textarea" } },
@@ -59,9 +62,10 @@ const painPointsTemplate = {
       ui: { itemProps: (i: any) => ({ label: i?.title || "Card" }) },
       fields: [
         { type: "string", name: "title", label: "Title" },
-        { type: "string", name: "body", label: "Body", ui: { component: "textarea" } },
+        { type: "string", name: "body", label: "Body (use **bold** for emphasis)", ui: { component: "textarea" } },
       ],
     },
+    { type: "string", name: "note", label: "Closing note (optional, green line under the cards)" },
   ],
 };
 
@@ -166,6 +170,7 @@ const featureCardsTemplate = {
   fields: [
     { type: "string", name: "theme", label: "Background", options: ["soft", "mint", "plain"] },
     { type: "string", name: "columns", label: "Columns", options: ["3", "2"] },
+    { type: "string", name: "cardStyle", label: "Card style", options: ["card", "industry"] },
     { type: "string", name: "eyebrow", label: "Eyebrow" },
     { type: "string", name: "heading", label: "Heading" },
     { type: "string", name: "lead", label: "Lead text (optional)" },
