@@ -1,6 +1,6 @@
 # Power Capital CMS — Project Notes
 
-> Current state of the `powercapital-cms` repo, updated 2026-11-12 (after the Industries port). Replaces the
+> Current state of the `powercapital-cms` repo, updated 2026-11-12 (all 6 pages ported). Replaces the
 > earlier HANDOFF.md. **No secrets in this file.** Tokens live only in TinaCloud
 > and in Cloudflare build settings.
 
@@ -36,7 +36,8 @@ built with **Astro + TinaCMS**. It replaces the hand-written 6-page HTML site.
 - ✅ All cleanup done: old tokens, `pages.dev` and merged-branch Site URLs removed, the Pages project removed, merged branches deleted. **No outstanding housekeeping.**
 - ✅ **Industries page ported** (`port-industries` branch, merged). It has 3 industry cards and 4 "Is it time?" sign cards with a closing note. Wording is kept as-is ("build-heavy", "covenant-heavy", "capital-intensive"). The intro reads "data centers construction and real estate", which is missing commas; it's left as-is and can be fixed in the editor.
 - ✅ **Footer tagline is editable site-wide** (Site Settings → Footer tagline, stored in `content/settings/site.json`). Change it once and it updates on every page; it updates live as you type.
-- ⬜ Port **Contact** last (it has the Web3Forms form). Take the real text from the old `powercapital` repo, now at `C:\dev\Powercapital`.
+- ✅ **Contact page ported** (`port-contact` branch, merged). It has the Web3Forms form plus the direct-contact panel. Text, dropdown options, button label, success message and the message-box hint text are editable. The access key, spam protection and field names are fixed in code.
+- ⬜ **Full-site check** on `https://powercapital-cms.jr-1791.workers.dev`: every page, the nav, footer, mobile view, SEO tags and the contact form (including hCaptcha on that address). (it has the Web3Forms form). Take the real text from the old `powercapital` repo, now at `C:\dev\Powercapital`.
 - ⬜ Check the whole site on Workers, then do the cutover (§7).
 
 ## 3. Versions (what's installed and working)
@@ -60,7 +61,7 @@ astro.config.mjs        output 'static', cloudflare adapter (imageService passth
 wrangler.jsonc          Worker name "powercapital-cms" (must match the dashboard), nodejs_compat, previews: {}
 tina/config.ts          schema: "settings" collection (content/settings/site.json, global, single doc) + "page" collection (content/pages/*.json) with a multi-template `blocks` list
 tina/tina-lock.json     MUST be committed whenever it changes (schema edits, Tina upgrades)
-content/pages/*.json    page content (SEO fields + ordered blocks): home.json, about.json, credentials.json, services.json, industries.json
+content/pages/*.json    page content (SEO fields + ordered blocks): home.json, about.json, credentials.json, services.json, industries.json, contact.json
 content/settings/site.json   site-wide settings: footerTagline
 src/lib/tina/data.ts    getPage(slug) and getSettings() -> requestWithMetadata(client.queries...)
 src/lib/tina/islands.ts editable-region registry: "page" -> PageBlocks, "footer" -> FooterContent
@@ -70,6 +71,7 @@ src/pages/about.astro   About: same pattern, slug "about", Person JSON-LD
 src/pages/credentials.astro   Credentials: same pattern, slug "credentials"
 src/pages/services.astro      Services: same pattern, slug "services"
 src/pages/industries.astro    Industries: same pattern, slug "industries"
+src/pages/contact.astro       Contact: same pattern, slug "contact"; also loads the Web3Forms client script (renders hCaptcha)
 src/components/Footer.astro         loads Site Settings, wraps FooterContent in <TinaIsland name="footer"> (not primary)
 src/components/FooterContent.astro  footer markup; tagline tagged with data-tina-field
 src/components/PageBlocks.astro   maps each block to a component (accepts _template or __typename)
@@ -88,7 +90,8 @@ public/assets/js/main.js site JS (nav, scroll reveal, contact form)
 | `positioningBanner` | PositioningBanner | Home | navy/mint centered banner |
 | `process` | Process | Home | numbered steps + button |
 | `ctaBand` | CtaBand | Home, About, Credentials, Services, Industries | closing call to action |
-| `pageHero` | PageHero | About, Credentials, Services, Industries | interior-page title banner with breadcrumb |
+| `contactSection` | ContactSection | Contact | Web3Forms form + details panel. Editable: form heading/intro, service dropdown options (list of {text}), message hint text, button label, success message, details heading/intro, detail rows {icon, label, value}, LinkedIn label/link, profile photo/name/role. Fixed in code: access key, honeypot, hCaptcha, field names, email subject, required-field check |
+| `pageHero` | PageHero | About, Credentials, Services, Industries, Contact | interior-page title banner with breadcrumb |
 | `bio` | Bio | About | photo + paragraphs + checklist + button |
 | `timeline` | Timeline | About | career timeline (first item = green dot) |
 | `featureCards` | FeatureCards | About, Credentials, Services, Industries | icon cards. Options: background `theme` (soft/mint/plain), `columns` (3 or 2), `cardStyle` ("card" default, or "industry" = gradient top stripe + hover lift), optional `lead`; each card has icon, title, optional grey `subtitle`, body (**bold** OK) |
@@ -100,6 +103,12 @@ public/assets/js/main.js site JS (nav, scroll reveal, contact form)
 Reuse these before creating new ones. Fields marked "use **bold**" accept `**text**` for emphasis.
 
 **Rule: every list must be a list of objects, not a list of plain strings.** Example: `{ type: "object", list: true, fields: [{ name: "text", ... }] }`, rendered with `tinaField(item, "text")`. Plain string lists (`type: "string", list: true`) can be clicked and saved, but **live typing doesn't refresh them**. We hit this on the About bio paragraphs and checklist.
+
+### Contact form notes
+- Submission logic is in `public/assets/js/main.js`: required-field check, hCaptcha check, a JSON POST to Web3Forms, and a dynamic subject "New Power Capital form submission from [Name]". The success text comes from the form's `data-success` attribute (the editor's "success message"), with a built-in fallback.
+- Web3Forms access key `b98fb3af-5915-41e0-9919-e3706c71046c` is in `ContactSection.astro`. It's a public form key, not a secret.
+- **Dropdown options can't be clicked to edit.** The browser draws the open list itself, so Tina can't attach to it. Edit them in the side panel under *Contact Form + Details → Service dropdown options*; the page still updates live.
+- hCaptcha may only allow approved domains. If it doesn't show on a preview or `workers.dev` address, add that domain in the Web3Forms/hCaptcha settings. Re-check this at cutover for `powercapital.cloud`.
 
 ### Site-wide (global) content
 The footer tagline lives in the **settings** collection, not in a page. Add more site-wide text (footer links, contact email, etc.) as fields there. Render it in `FooterContent.astro` (or another component) with `tinaField(settings, "<field>")`. Pages mark their own `<TinaIsland ... primary>`, so the editor opens the page's sections first; the footer island is not primary.
@@ -161,7 +170,7 @@ Only after all 6 pages are ported and checked on Workers:
 
 ## 8. Housekeeping
 
-**Nothing outstanding** as of 2026-11-12. Done: old TinaCloud tokens deleted; `pages.dev` and merged-branch Site URLs removed; the Cloudflare Pages project removed; merged branches deleted (`live-editing`, `port-about`, `port-credentials`, `port-services`, `port-industries`).
+**Nothing outstanding** as of 2026-11-12. Done: old TinaCloud tokens deleted; `pages.dev` and merged-branch Site URLs removed; the Cloudflare Pages project removed; merged branches deleted (`live-editing`, `port-about`, `port-credentials`, `port-services`, `port-industries`, `port-contact`).
 
 TinaCloud **Site URLs** should contain only `http://localhost:4321` and `https://powercapital-cms.jr-1791.workers.dev`, plus the preview of whatever branch is in progress. At cutover, add `https://powercapital.cloud` and `https://www.powercapital.cloud`.
 
@@ -180,6 +189,6 @@ Then remove its preview address from TinaCloud → Site URLs. Deleted branches m
 - About page: vertical career timeline (current role = green dot, Amazon roles = orange dots).
 - Credentials page: CFI certifications, education, and 6 LinkedIn recommendations (no timeline).
 - Footer tagline (editable in Site Settings): "Fractional CFO leadership for growing companies investing in Data Center Construction."
-- Contact: Web3Forms (hCaptcha on). Fields: Name, Email, Company (optional), Service, Message. Services: CFO Advisory / Project CFO / Fractional CFO. Animated "Message sent!" with no page reload. **No free calls.**
+- Contact (ported): Web3Forms (hCaptcha on). Fields: Name, Email, Company (optional), Service, Message. Services: CFO Advisory / Project CFO / Fractional CFO. Animated "Message sent!" with no page reload. **No free calls.**
 - Footer: tagline (above) + "Designed and built by Kala Roberts" → https://kalaroberts.github.io/. Links, LinkedIn and copyright are fixed in code.
 - SEO: canonical tags, Open Graph and Twitter cards, JSON-LD (ProfessionalService on Home, Person on About), page titles "Power Capital: <Page>".

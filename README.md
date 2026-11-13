@@ -3,7 +3,7 @@
 The website for **Power Capital**, the fractional-CFO practice of John Roberts. It's built with **Astro**, with a **TinaCMS / TinaCloud** content layer, so non-technical editors can update the site in a visual editor. They click text on the page, type, and see the change straight away. No code is needed.
 
 **Live site (current):** https://powercapital.cloud is still served by the original static-HTML repo. This repo is in the build/preview phase and takes over the domain at cutover.
-**Pages ported:** Home, About, Credentials, Services, Industries. Still to do: Contact.
+**Pages ported:** all six — Home, About, Credentials, Services, Industries, Contact. Next: full-site check, then cutover.
 **Stack:** Astro 7 (prerendered pages) · TinaCMS 3 + TinaCloud · `@tinacms/astro` live visual editing · Cloudflare Workers · vanilla CSS/JS
 
 > Maintainers: see **[PROJECT-NOTES.md](PROJECT-NOTES.md)** for versions, the full workflow, known issues and fixes, and the cutover checklist.
@@ -58,7 +58,7 @@ powercapital-cms/
 ├── tina/
 │   ├── config.ts           # TinaCMS schema: "page" collection + section block templates
 │   └── tina-lock.json      # generated; MUST be committed whenever it changes
-├── content/pages/          # editable page content as JSON (home.json, about.json, credentials.json, services.json, industries.json, …)
+├── content/pages/          # editable page content as JSON (home.json, about.json, credentials.json, services.json, industries.json, contact.json)
 ├── content/settings/site.json # site-wide settings (footer tagline)
 ├── scripts/copy-bridge.mjs # dev-only: puts Tina's bridge.js in public/admin
 ├── src/
@@ -69,13 +69,14 @@ powercapital-cms/
 │   ├── components/
 │   │   ├── Header.astro · Footer.astro · FooterContent.astro
 │   │   ├── PageBlocks.astro        # renders a page's blocks
-│   │   └── blocks/                 # one component per section type (Hero, PainPoints, PageHero, Bio, Timeline, Recommendations, NumberedList, Plans, …)
+│   │   └── blocks/                 # one component per section type (Hero, PainPoints, PageHero, Bio, Timeline, Recommendations, NumberedList, Plans, ContactSection, …)
 │   ├── pages/
 │   │   ├── index.astro             # Home
 │   │   ├── about.astro             # About
 │   │   ├── credentials.astro       # Credentials
 │   │   ├── services.astro          # Services
 │   │   ├── industries.astro        # Industries
+│   │   ├── contact.astro           # Contact (Web3Forms form)
 │   │   └── tina-island/[name].ts   # editor-only on-demand route
 │   └── styles/global.css           # the design system
 └── public/
@@ -112,7 +113,7 @@ npx tinacms build --local --skip-cloud-checks -c "astro build"
 
 The Worker `powercapital-cms` is connected to this repo through Workers Builds:
 
-- **Production branch:** `main` → `https://powercapital-cms.jr-1791.workers.dev` (Home at `/`, pages at `/about`, `/credentials`, `/services`, `/industries`, …)
+- **Production branch:** `main` → `https://powercapital-cms.jr-1791.workers.dev` (Home at `/`, pages at `/about`, `/credentials`, `/services`, `/industries`, `/contact`)
 - **Every other branch** gets its own **Preview** at `https://<branch>-powercapital-cms.jr-1791.workers.dev`, listed in the Worker's *Previews* section. It shows the whole site as of that branch.
 - **Build command:** `npm run build`
 - **Deploy command:** `npx wrangler deploy` · **Preview command:** `npx wrangler preview`
@@ -139,7 +140,7 @@ Credentials are never committed. They live only in Cloudflare build settings (se
 ## Notes
 
 - **Secrets:** never commit a `.env` file or a Tina token.
-- **Contact form:** posts to Web3Forms with hCaptcha spam protection. Analytics run through Google Analytics (GA4).
+- **Contact form:** posts to Web3Forms with hCaptcha spam protection. Its text and dropdown options are editable in Tina; the key and spam settings stay in code. Analytics run through Google Analytics (GA4).
 - **Custom domain:** `public/CNAME` holds `powercapital.cloud` for the future cutover. At cutover, `powercapital.cloud` is added as a Custom Domain on the Worker and DNS is pointed there (see PROJECT-NOTES.md §7).
 
 ---
