@@ -1,0 +1,23 @@
+---
+import { navItems } from "../lib/nav";
+const { labels, active = "" } = Astro.props as { labels?: any; active?: string };
+const links = navItems(labels);
+---
+  <div class="container nav">
+    <a class="brand" href="/">
+      <img src="/assets/img/logo-rich.png" alt="Power Capital logo" />
+      <span>Power Capital<span class="brand-sub">Fractional CFO</span></span>
+    </a>
+    <nav>
+      <ul class="nav-links">
+        {links.map((l) => (
+          <li>
+            <a href={l.href} class={active === l.key ? "active" : undefined}>{l.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <div class="nav-cta">
+      <button class="nav-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>

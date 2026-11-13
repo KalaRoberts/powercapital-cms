@@ -1,12 +1,12 @@
 ---
 import { tinaField } from "@tinacms/astro/tina-field";
 import { inline } from "../../lib/inline";
-const { breadcrumb, heading, body, block } = Astro.props as any;
+const { heading, body, block, crumb } = Astro.props as any;
 const f = (n: string) => (block ? tinaField(block, n) : undefined);
 ---
 <section class="page-hero">
   <div class="container">
-    {breadcrumb && <div class="breadcrumb"><a href="/">Home</a> / <span data-tina-field={f("breadcrumb")}>{breadcrumb}</span></div>}
+    {crumb && <div class="breadcrumb"><a href="/">{crumb.home}</a> / <span data-tina-field={crumb.field}>{crumb.page}</span></div>}
     {heading && <h1 data-tina-field={f("heading")}>{heading}</h1>}
     {body && <p data-tina-field={f("body")} set:html={inline(body)} />}
   </div>

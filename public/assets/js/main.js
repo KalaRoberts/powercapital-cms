@@ -1,17 +1,15 @@
 // Power Capital — shared site JS
 (function(){
-  // Mobile nav toggle
-  var toggle = document.querySelector('.nav-toggle');
-  var links  = document.querySelector('.nav-links');
-  if(toggle && links){
-    toggle.addEventListener('click', function(){
-      links.classList.toggle('open');
-    });
-  }
-
-  // Header shadow on scroll
-  var header = document.querySelector('.site-header');
+  // Mobile nav toggle + header shadow.
+  // Uses delegation / fresh lookups because the live editor can re-render the header.
+  document.addEventListener('click', function(e){
+    var t = e.target.closest && e.target.closest('.nav-toggle');
+    if(!t) return;
+    var links = document.querySelector('.nav-links');
+    if(links) links.classList.toggle('open');
+  });
   function onScroll(){
+    var header = document.querySelector('.site-header');
     if(!header) return;
     if(window.scrollY > 8){ header.classList.add('scrolled'); }
     else { header.classList.remove('scrolled'); }

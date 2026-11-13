@@ -37,10 +37,22 @@ const keyOf = (b: any): string => {
   return k.charAt(0).toLowerCase() + k.slice(1);
 };
 
+import { tinaField } from "@tinacms/astro/tina-field";
+import { getMenuLabels } from "../lib/tina/data";
+import { labelFor } from "../lib/nav";
+
 const { page } = Astro.props as { page: any };
 const blocks: any[] = page?.blocks ?? [];
+// Breadcrumb is automatic: "<Home's Menu Label> / <this page's Menu Label>".
+const saved = await getMenuLabels();
+const slug = page?._sys?.filename ?? "";
+const crumb = {
+  home: labelFor("home", saved),
+  page: page?.menuLabel?.trim() || labelFor(slug, saved),
+  field: page ? tinaField(page, "menuLabel") : undefined,
+};
 ---
 {blocks.map((block) => {
   const Cmp = BLOCKS[keyOf(block)];
-  return Cmp ? <Cmp {...block} block={block} /> : null;
+  return Cmp ? <Cmp {...block} block={block} crumb={crumb} /> : null;
 })}

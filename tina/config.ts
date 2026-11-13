@@ -1,4 +1,5 @@
-import { defineConfig } from "tinacms";
+import { defineConfig, wrapFieldsWithMeta } from "tinacms";
+import React from "react";
 
 /**
  * TinaCMS configuration for Power Capital.
@@ -117,7 +118,6 @@ const pageHeroTemplate = {
   name: "pageHero",
   label: "Page Title Banner",
   fields: [
-    { type: "string", name: "breadcrumb", label: "Breadcrumb label (after 'Home /')" },
     { type: "string", name: "heading", label: "Heading" },
     { type: "string", name: "body", label: "Intro text", ui: { component: "textarea" } },
   ],
@@ -293,6 +293,46 @@ const contactSectionTemplate = {
   ],
 };
 
+// Menu Label input with a hint that names this page's own url.
+// Tina field hints are normally the same on every page, so this small custom
+// input works out which page is open from the form's file path.
+const MENU_HINT_REST =
+  " doesn't change. If you want your SEO title and Social share title to match, update below. This change will not show on the page until you save and navigate to another page.";
+const MenuLabelInput = wrapFieldsWithMeta((props: any) => {
+  const id = String(props?.tinaForm?.id ?? props?.form?.id ?? props?.tinaForm?.relativePath ?? "");
+  const slug = id.split("/").pop()?.replace(/\.json$/, "") ?? "";
+  const url = slug ? `/${slug}` : "e.g. /about";
+  return React.createElement(
+    "div",
+    { style: { width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box" } },
+    React.createElement(
+      "p",
+      {
+        style: {
+          fontSize: "12px", color: "#6b7280", margin: "0 0 8px", lineHeight: 1.4,
+          whiteSpace: "normal", overflowWrap: "anywhere", wordBreak: "break-word", maxWidth: "100%",
+        },
+      },
+      `Menu name only - the url (${url})${MENU_HINT_REST}`,
+    ),
+    React.createElement("input", {
+      ...props.input,
+      value: props.input?.value ?? "",
+      type: "text",
+      style: {
+        width: "100%", maxWidth: "100%", boxSizing: "border-box", padding: "8px 12px", fontSize: "16px", borderRadius: "6px",
+        border: "1px solid #e1ddec", boxShadow: "0 1px 2px rgba(0,0,0,.05)", background: "#fff",
+      },
+    }),
+  );
+});
+
+// Menu label limit (keep in sync with NAV_MAX in src/lib/nav.ts).
+const navLabelLimit = (value?: string) =>
+  value && value.trim().length > 14
+    ? `Keep it to 14 characters or fewer (now ${value.trim().length}) so the menu doesn't wrap.`
+    : undefined;
+
 export default defineConfig({
   clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID || "",
   token: process.env.TINA_TOKEN || "",
@@ -332,9 +372,15 @@ export default defineConfig({
           },
         },
         fields: [
-          { type: "string", name: "title", label: "SEO title", required: true },
+          {
+            type: "string",
+            name: "menuLabel",
+            label: "Menu Label",
+            ui: { component: MenuLabelInput, validate: navLabelLimit },
+          },
+          { type: "string", name: "title", label: "SEO title", description: "Shown in the browser tab and Google results.", required: true },
           { type: "string", name: "description", label: "SEO description", ui: { component: "textarea" } },
-          { type: "string", name: "ogTitle", label: "Social share title" },
+          { type: "string", name: "ogTitle", label: "Social share title", description: "Shown when the page is shared on LinkedIn etc." },
           { type: "string", name: "ogDescription", label: "Social share description", ui: { component: "textarea" } },
           {
             type: "object",

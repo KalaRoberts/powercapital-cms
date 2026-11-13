@@ -1,11 +1,11 @@
 {
+  "menuLabel": "About",
   "title": "Power Capital: About",
   "description": "John Roberts is a fractional CFO with 16 years as a finance professional — including 15 years at AWS and Amazon.com, from Financial Analyst to Senior Finance Manager.",
   "ogTitle": "Power Capital: About",
   "ogDescription": "16 years as a finance professional, including 15 at AWS and Amazon — meet John Roberts, President of Power Capital.",
   "blocks": [
     {
-      "breadcrumb": "About",
       "heading": "Meet our President",
       "body": "A finance partner forged in Amazon's hypergrowth — now bringing that discipline to growing companies as their fractional CFO.",
       "_template": "pageHero"

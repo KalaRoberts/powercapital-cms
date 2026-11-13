@@ -1,7 +1,7 @@
 import type { IslandRegistry } from "@tinacms/astro/experimental";
 import PageBlocks from "../../components/PageBlocks.astro";
 import FooterContent from "../../components/FooterContent.astro";
-import { getPage, getSettings } from "./data";
+import { getPage, getSettings, getMenuLabels } from "./data";
 
 export const PAGE_WRAPPER = { tag: "div", className: "page-blocks" };
 export const FOOTER_WRAPPER = { tag: "footer", className: "site-footer" };
@@ -17,11 +17,12 @@ export const islands: IslandRegistry = {
     }),
   },
   footer: {
-    fetch: () => getSettings(),
+    fetch: async () => Object.assign(await getSettings(), { menuLabels: await getMenuLabels() }),
     component: FooterContent,
     wrapper: FOOTER_WRAPPER,
     propsFromData: (data) => ({
       settings: (data as { data?: { settings?: unknown } }).data?.settings,
+      labels: (data as { menuLabels?: unknown }).menuLabels,
     }),
   },
 };

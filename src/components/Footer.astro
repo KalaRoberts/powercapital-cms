@@ -1,14 +1,15 @@
 ---
 import TinaIsland from "@tinacms/astro/TinaIsland.astro";
 import FooterContent from "./FooterContent.astro";
-import { getSettings } from "../lib/tina/data";
+import { getSettings, getMenuLabels } from "../lib/tina/data";
 import { FOOTER_WRAPPER } from "../lib/tina/islands";
 
 // Site-wide footer. The tagline comes from Site Settings (content/settings/site.json)
 // and is editable from the visual editor on every page.
 const result = await getSettings();
 const settings: any = result.data.settings;
+const labels = await getMenuLabels();
 ---
 <TinaIsland name="footer" wrapper={FOOTER_WRAPPER}>
-  <FooterContent settings={settings} />
+  <FooterContent settings={settings} labels={labels} />
 </TinaIsland>

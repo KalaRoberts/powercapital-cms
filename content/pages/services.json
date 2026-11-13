@@ -1,4 +1,5 @@
 {
+  "menuLabel": "Services",
   "title": "Power Capital: Services",
   "description": "Fractional CFO services from Power Capital: cash flow forecasting, budgets, FP&A, capital raising, controls, KPI dashboards, and turnaround support.",
   "ogTitle": "Power Capital: Services",
@@ -6,7 +7,6 @@
   "blocks": [
     {
       "_template": "pageHero",
-      "breadcrumb": "Services",
       "heading": "Strategy, controls, and capital.",
       "body": "Your part-time CFO — running your finance strategy alongside your team."
     },

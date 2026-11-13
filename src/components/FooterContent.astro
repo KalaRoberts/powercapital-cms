@@ -1,7 +1,9 @@
 ---
 import { tinaField } from "@tinacms/astro/tina-field";
-const { settings } = Astro.props as { settings: any };
+import { navItems } from "../lib/nav";
+const { settings, labels } = Astro.props as { settings: any; labels?: any };
 const tagline = settings?.footerTagline;
+const links = navItems(labels);
 const year = new Date().getFullYear();
 ---
   <div class="container">
@@ -17,12 +19,7 @@ const year = new Date().getFullYear();
       <div class="footer-col">
         <h4>Explore</h4>
         <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/credentials">Credentials</a></li>
-          <li><a href="/services">Services</a></li>
-          <li><a href="/industries">Industries</a></li>
-          <li><a href="/contact">Contact</a></li>
+          {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
         </ul>
       </div>
       <div class="footer-col">

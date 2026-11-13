@@ -1,4 +1,5 @@
 {
+  "menuLabel": "Contact",
   "title": "Power Capital: Contact",
   "description": "Get in touch with Power Capital. Send us a message or connect on LinkedIn.",
   "ogTitle": "Power Capital: Contact",
@@ -6,7 +7,6 @@
   "blocks": [
     {
       "_template": "pageHero",
-      "breadcrumb": "Contact",
       "heading": "Connect with us",
       "body": "Tell us about your business and what you're looking for."
     },

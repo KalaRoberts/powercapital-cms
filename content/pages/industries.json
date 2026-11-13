@@ -1,11 +1,11 @@
 {
+  "menuLabel": "Industries",
   "title": "Power Capital: Industries",
   "description": "Power Capital brings CFO-level discipline to capital-intensive, build-heavy businesses — data centers, construction, and real estate.",
   "ogTitle": "Power Capital: Industries",
   "ogDescription": "Data center construction and real estate",
   "blocks": [
     {
-      "breadcrumb": "Industries",
       "heading": "Who we work with",
       "body": "Power Capital brings CFO-level discipline to capital-intensive businesses — data center construction and real estate — and growing companies that need a seasoned finance partner.",
       "_template": "pageHero"
