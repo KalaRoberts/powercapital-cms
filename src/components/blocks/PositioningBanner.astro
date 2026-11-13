@@ -1,11 +1,7 @@
 ---
-export interface Props {
-  eyebrow?: string;
-  heading?: string;
-  body?: string;
-  theme?: "navy" | "mint";
-}
-const { eyebrow, heading, body, theme = "navy" } = Astro.props;
+import { tinaField } from "@tinacms/astro/tina-field";
+const { eyebrow, heading, body, theme = "navy", block } = Astro.props as any;
+const f = (name: string) => (block ? tinaField(block, name) : undefined);
 const sectionClass = theme === "navy" ? "bg-navy" : "bg-mint";
 const headStyle = theme === "navy" ? "margin-bottom:.6rem;color:#fff" : "margin-bottom:.6rem";
 const bodyStyle = theme === "navy"
@@ -15,8 +11,8 @@ const eyebrowStyle = theme === "navy" ? "color:var(--accent-300)" : undefined;
 ---
 <section class={sectionClass}>
   <div class="container" style="text-align:center;max-width:860px">
-    {eyebrow && <span class="eyebrow" style={eyebrowStyle}>{eyebrow}</span>}
-    {heading && <h2 style={headStyle}>{heading}</h2>}
-    {body && <p style={bodyStyle}>{body}</p>}
+    {eyebrow && <span class="eyebrow" style={eyebrowStyle} data-tina-field={f("eyebrow")}>{eyebrow}</span>}
+    {heading && <h2 style={headStyle} data-tina-field={f("heading")}>{heading}</h2>}
+    {body && <p style={bodyStyle} data-tina-field={f("body")}>{body}</p>}
   </div>
 </section>

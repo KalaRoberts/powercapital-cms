@@ -1,20 +1,16 @@
 ---
-export interface Props {
-  heading?: string;
-  body?: string;
-  ctaLabel?: string;
-  ctaHref?: string;
-}
-const { heading, body, ctaLabel, ctaHref } = Astro.props;
+import { tinaField } from "@tinacms/astro/tina-field";
+const { heading, body, ctaLabel, ctaHref, block } = Astro.props as any;
+const f = (name: string) => (block ? tinaField(block, name) : undefined);
 ---
 <section>
   <div class="container">
     <div class="cta-band reveal">
-      {heading && <h2>{heading}</h2>}
-      {body && <p>{body}</p>}
+      {heading && <h2 data-tina-field={f("heading")}>{heading}</h2>}
+      {body && <p data-tina-field={f("body")}>{body}</p>}
       {ctaLabel && (
         <div class="hero-cta">
-          <a href={ctaHref} class="btn btn-primary btn-lg">{ctaLabel}</a>
+          <a href={ctaHref} class="btn btn-primary btn-lg" data-tina-field={f("ctaLabel")}>{ctaLabel}</a>
         </div>
       )}
     </div>

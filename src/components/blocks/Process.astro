@@ -1,29 +1,26 @@
 ---
-export interface Props {
-  eyebrow?: string;
-  heading?: string;
-  steps?: { title: string; body: string }[];
-  ctaLabel?: string;
-  ctaHref?: string;
-  theme?: "mint" | "navy" | "plain";
-}
-const { eyebrow, heading, steps = [], ctaLabel, ctaHref, theme = "mint" } = Astro.props;
+import { tinaField } from "@tinacms/astro/tina-field";
+const { eyebrow, heading, steps = [], ctaLabel, ctaHref, theme = "mint", block } = Astro.props as any;
+const f = (name: string) => (block ? tinaField(block, name) : undefined);
 const sectionClass = theme === "mint" ? "bg-mint" : theme === "navy" ? "bg-navy" : "";
 ---
 <section class={sectionClass}>
   <div class="container">
     <div class="section-head center mx-auto">
-      {eyebrow && <span class="eyebrow">{eyebrow}</span>}
-      {heading && <h2>{heading}</h2>}
+      {eyebrow && <span class="eyebrow" data-tina-field={f("eyebrow")}>{eyebrow}</span>}
+      {heading && <h2 data-tina-field={f("heading")}>{heading}</h2>}
     </div>
     <div class="steps" style="max-width:720px;margin:0 auto">
-      {steps.map((s) => (
-        <div class="step reveal"><h3>{s.title}</h3><p>{s.body}</p></div>
+      {(steps ?? []).map((s: any) => (
+        <div class="step reveal">
+          <h3 data-tina-field={tinaField(s, "title")}>{s.title}</h3>
+          <p data-tina-field={tinaField(s, "body")}>{s.body}</p>
+        </div>
       ))}
     </div>
     {ctaLabel && (
       <div class="center" style="margin-top:44px">
-        <a href={ctaHref} class="btn btn-dark btn-lg">{ctaLabel}</a>
+        <a href={ctaHref} class="btn btn-dark btn-lg" data-tina-field={f("ctaLabel")}>{ctaLabel}</a>
       </div>
     )}
   </div>

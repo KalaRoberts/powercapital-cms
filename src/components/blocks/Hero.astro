@@ -1,47 +1,50 @@
 ---
-export interface Props {
-  eyebrow?: string;
-  heading: string;
-  ctaPrimaryLabel?: string;
-  ctaPrimaryHref?: string;
-  ctaSecondaryLabel?: string;
-  ctaSecondaryHref?: string;
-  stats?: { value: string; label: string }[];
-  portrait?: string;
-  portraitAlt?: string;
-  badgeTop?: string;
-  badgeBottom?: string;
-}
+import { tinaField } from "@tinacms/astro/tina-field";
 const {
   eyebrow, heading,
   ctaPrimaryLabel, ctaPrimaryHref,
   ctaSecondaryLabel, ctaSecondaryHref,
   stats = [], portrait, portraitAlt,
-  badgeTop, badgeBottom,
-} = Astro.props;
+  badgeTop, badgeBottom, block,
+} = Astro.props as any;
+const f = (name: string) => (block ? tinaField(block, name) : undefined);
+// TinaCloud rewrites repo image paths to its media CDN (assets.tina.io), which
+// may not have the file. Map those back to the copy committed in public/assets/img.
+const localImg = (src?: string) => {
+  if (!src) return src;
+  const m = src.match(/^https:\/\/assets\.tina\.io\/.*\/__file\/(.+)$/);
+  return m ? `/assets/img/${m[1]}` : src;
+};
+const portraitSrc = localImg(portrait);
 ---
 <section class="hero">
   <div class="container hero-inner">
     <div>
-      {eyebrow && <span class="eyebrow">{eyebrow}</span>}
-      <h1>{heading}</h1>
+      {eyebrow && <span class="eyebrow" data-tina-field={f("eyebrow")}>{eyebrow}</span>}
+      <h1 data-tina-field={f("heading")}>{heading}</h1>
       <div class="hero-cta">
-        {ctaPrimaryLabel && <a href={ctaPrimaryHref} class="btn btn-primary btn-lg">{ctaPrimaryLabel}</a>}
-        {ctaSecondaryLabel && <a href={ctaSecondaryHref} class="btn btn-light btn-lg">{ctaSecondaryLabel}</a>}
+        {ctaPrimaryLabel && <a href={ctaPrimaryHref} class="btn btn-primary btn-lg" data-tina-field={f("ctaPrimaryLabel")}>{ctaPrimaryLabel}</a>}
+        {ctaSecondaryLabel && <a href={ctaSecondaryHref} class="btn btn-light btn-lg" data-tina-field={f("ctaSecondaryLabel")}>{ctaSecondaryLabel}</a>}
       </div>
-      {stats.length > 0 && (
+      {stats && stats.length > 0 && (
         <div class="hero-stats">
-          {stats.map((s) => (
-            <div class="stat"><div class="n">{s.value}</div><div class="l">{s.label}</div></div>
+          {stats.map((s: any) => (
+            <div class="stat">
+              <div class="n" data-tina-field={tinaField(s, "value")}>{s.value}</div>
+              <div class="l" data-tina-field={tinaField(s, "label")}>{s.label}</div>
+            </div>
           ))}
         </div>
       )}
     </div>
     {portrait && (
       <div class="hero-portrait">
-        <img src={portrait} alt={portraitAlt} />
+        <img src={portraitSrc} alt={portraitAlt} data-tina-field={f("portrait")} />
         {(badgeTop || badgeBottom) && (
-          <div class="hero-badge"><div class="n">{badgeTop}</div><div class="l">{badgeBottom}</div></div>
+          <div class="hero-badge">
+            <div class="n" data-tina-field={f("badgeTop")}>{badgeTop}</div>
+            <div class="l" data-tina-field={f("badgeBottom")}>{badgeBottom}</div>
+          </div>
         )}
       </div>
     )}

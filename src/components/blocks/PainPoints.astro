@@ -1,22 +1,21 @@
 ---
-export interface Props {
-  eyebrow?: string;
-  heading?: string;
-  lead?: string;
-  cards?: { title: string; body: string }[];
-}
-const { eyebrow, heading, lead, cards = [] } = Astro.props;
+import { tinaField } from "@tinacms/astro/tina-field";
+const { eyebrow, heading, lead, cards = [], block } = Astro.props as any;
+const f = (name: string) => (block ? tinaField(block, name) : undefined);
 ---
 <section>
   <div class="container">
     <div class="section-head">
-      {eyebrow && <span class="eyebrow">{eyebrow}</span>}
-      {heading && <h2>{heading}</h2>}
-      {lead && <p class="lead">{lead}</p>}
+      {eyebrow && <span class="eyebrow" data-tina-field={f("eyebrow")}>{eyebrow}</span>}
+      {heading && <h2 data-tina-field={f("heading")}>{heading}</h2>}
+      {lead && <p class="lead" data-tina-field={f("lead")}>{lead}</p>}
     </div>
     <div class="grid grid-3">
-      {cards.map((c) => (
-        <div class="pain reveal"><h3>{c.title}</h3><p>{c.body}</p></div>
+      {(cards ?? []).map((c: any) => (
+        <div class="pain reveal">
+          <h3 data-tina-field={tinaField(c, "title")}>{c.title}</h3>
+          <p data-tina-field={tinaField(c, "body")}>{c.body}</p>
+        </div>
       ))}
     </div>
   </div>

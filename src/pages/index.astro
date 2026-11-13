@@ -1,20 +1,12 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Hero from "../components/blocks/Hero.astro";
-import PainPoints from "../components/blocks/PainPoints.astro";
-import PositioningBanner from "../components/blocks/PositioningBanner.astro";
-import Process from "../components/blocks/Process.astro";
-import CtaBand from "../components/blocks/CtaBand.astro";
-import home from "../../content/pages/home.json";
+import TinaIsland from "@tinacms/astro/TinaIsland.astro";
+import PageBlocks from "../components/PageBlocks.astro";
+import { getPage } from "../lib/tina/data";
+import { PAGE_WRAPPER } from "../lib/tina/islands";
 
-// Map each block's _template to its component.
-const BLOCKS: Record<string, any> = {
-  hero: Hero,
-  painPoints: PainPoints,
-  positioningBanner: PositioningBanner,
-  process: Process,
-  ctaBand: CtaBand,
-};
+const result = await getPage("home");
+const home: any = result.data.page;
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -57,8 +49,7 @@ const jsonLd = {
   active="home"
   jsonLd={jsonLd}
 >
-  {home.blocks.map((block: any) => {
-    const Cmp = BLOCKS[block._template];
-    return Cmp ? <Cmp {...block} /> : null;
-  })}
+  <TinaIsland name="page" wrapper={PAGE_WRAPPER} params={{ slug: "home" }} primary>
+    <PageBlocks page={home} />
+  </TinaIsland>
 </BaseLayout>

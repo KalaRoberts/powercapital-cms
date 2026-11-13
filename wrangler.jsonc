@@ -1,0 +1,10 @@
+{
+  // Cloudflare Workers config. "name" MUST match the Worker's name in the
+  // Cloudflare dashboard or Workers Builds will fail.
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "powercapital-cms",
+  "compatibility_date": "2026-11-12",
+  "compatibility_flags": ["nodejs_compat"],
+  // One Preview per git branch (e.g. live-editing). No preview-only settings needed.
+  "previews": {}
+}
