@@ -297,7 +297,7 @@ const contactSectionTemplate = {
 // Tina field hints are normally the same on every page, so this small custom
 // input works out which page is open from the form's file path.
 const MENU_HINT_REST =
-  " doesn't change. If you want your SEO title and Social share title to match, update below. This change will not show on the page until you save and navigate to another page.";
+  " doesn't change. This change will not show in the Menu until you click Save and takes up to 5 minutes to process. If you want your SEO title and Social share title to match, update below.";
 const MenuLabelInput = wrapFieldsWithMeta((props: any) => {
   const id = String(props?.tinaForm?.id ?? props?.form?.id ?? props?.tinaForm?.relativePath ?? "");
   const slug = id.split("/").pop()?.replace(/\.json$/, "") ?? "";
