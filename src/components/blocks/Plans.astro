@@ -1,0 +1,37 @@
+---
+import { tinaField } from "@tinacms/astro/tina-field";
+import { inline } from "../../lib/inline";
+const { eyebrow, heading, plans = [], block } = Astro.props as any;
+const f = (n: string) => (block ? tinaField(block, n) : undefined);
+const BADGE = "position:absolute;top:-13px;left:24px;background:var(--accent);color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:20px";
+---
+<section>
+  <div class="container">
+    <div class="section-head center mx-auto">
+      {eyebrow && <span class="eyebrow" data-tina-field={f("eyebrow")}>{eyebrow}</span>}
+      {heading && <h2 data-tina-field={f("heading")}>{heading}</h2>}
+    </div>
+    <div class="grid grid-3">
+      {(plans ?? []).map((p: any) => (
+        <div class="card reveal" style={p.featured ? "border:2px solid var(--accent);position:relative" : undefined}
+             data-tina-field={tinaField(p, "featured")}>
+          {p.featured && <span style={BADGE} data-tina-field={tinaField(p, "badge")}>{p.badge || "Most popular"}</span>}
+          <h3 data-tina-field={tinaField(p, "name")}>{p.name}</h3>
+          {p.summary && <p style="color:var(--muted);margin-bottom:16px" data-tina-field={tinaField(p, "summary")}>{p.summary}</p>}
+          {p.features && p.features.length > 0 && (
+            <ul class="credlist" style="margin-top:0">
+              {p.features.map((x: any) => (
+                <li><span class="tick"><i class="fa-solid fa-circle-check"></i></span> <span data-tina-field={tinaField(x, "text")}>{x.text}</span></li>
+              ))}
+            </ul>
+          )}
+          {p.fit && (
+            <p style="margin-top:16px;font-size:.9rem;color:var(--muted)" data-tina-field={tinaField(p, "fit")}>
+              <strong>Good fit:</strong> <span set:html={inline(p.fit)} />
+            </p>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

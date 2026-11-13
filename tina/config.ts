@@ -211,6 +211,50 @@ const recommendationsTemplate = {
   ],
 };
 
+const numberedListTemplate = {
+  name: "numberedList",
+  label: "Numbered List (pillars)",
+  fields: [
+    { type: "string", name: "theme", label: "Background", options: ["soft", "mint", "plain"] },
+    { type: "string", name: "eyebrow", label: "Eyebrow" },
+    { type: "string", name: "heading", label: "Heading" },
+    {
+      type: "object", name: "items", label: "Items", list: true,
+      ui: { itemProps: (i: any) => ({ label: [i?.number, i?.title].filter(Boolean).join(" · ") || "Item" }) },
+      fields: [
+        { type: "string", name: "number", label: "Number (e.g. 01)" },
+        { type: "string", name: "title", label: "Title" },
+        { type: "string", name: "body", label: "Text (use **bold** for emphasis)", ui: { component: "textarea" } },
+      ],
+    },
+  ],
+};
+
+const plansTemplate = {
+  name: "plans",
+  label: "Plans / Engagement Options",
+  fields: [
+    { type: "string", name: "eyebrow", label: "Eyebrow" },
+    { type: "string", name: "heading", label: "Heading" },
+    {
+      type: "object", name: "plans", label: "Plans", list: true,
+      ui: { itemProps: (i: any) => ({ label: i?.name || "Plan" }) },
+      fields: [
+        { type: "boolean", name: "featured", label: "Highlight this plan (orange border + badge)" },
+        { type: "string", name: "badge", label: "Badge text when highlighted (default: Most popular)" },
+        { type: "string", name: "name", label: "Plan name" },
+        { type: "string", name: "summary", label: "Short description" },
+        {
+          type: "object", name: "features", label: "Bullet points", list: true,
+          ui: { itemProps: (i: any) => ({ label: i?.text || "Bullet" }) },
+          fields: [{ type: "string", name: "text", label: "Text" }],
+        },
+        { type: "string", name: "fit", label: "Good fit (text after 'Good fit:')" },
+      ],
+    },
+  ],
+};
+
 export default defineConfig({
   clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID || "",
   token: process.env.TINA_TOKEN || "",
@@ -257,6 +301,8 @@ export default defineConfig({
               featureCardsTemplate,
               textSectionTemplate,
               recommendationsTemplate,
+              numberedListTemplate,
+              plansTemplate,
             ],
             ui: {
               visualSelector: true,

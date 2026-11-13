@@ -1,0 +1,154 @@
+{
+  "title": "Power Capital: Services",
+  "description": "Fractional CFO services from Power Capital: cash flow forecasting, budgets, FP&A, capital raising, controls, KPI dashboards, and turnaround support.",
+  "ogTitle": "Power Capital: Services",
+  "ogDescription": "Internal audit, FP&A, capital raising, and accounting governance — fractional CFO services for capital-intensive builds.",
+  "blocks": [
+    {
+      "_template": "pageHero",
+      "breadcrumb": "Services",
+      "heading": "Strategy, controls, and capital.",
+      "body": "Your part-time CFO — running your finance strategy alongside your team."
+    },
+    {
+      "_template": "featureCards",
+      "theme": "plain",
+      "columns": "2",
+      "eyebrow": "Core services",
+      "heading": "What we deliver.",
+      "cards": [
+        {
+          "icon": "fa-solid fa-magnifying-glass-chart",
+          "title": "Internal Audit & Controls",
+          "body": "Framework to pinpoint missing controls, redundant processes, or compliance risk — making you audit-ready."
+        },
+        {
+          "icon": "fa-solid fa-diagram-project",
+          "title": "Financial Systems & FP&A",
+          "body": "Designing the reporting infrastructure and FP&A cadence that let you trust the numbers and plan ahead with confidence."
+        },
+        {
+          "icon": "fa-solid fa-sliders",
+          "title": "Budgets & Burn-Rate Control",
+          "body": "An operating budget you actually use, budget-versus-actual reviews, and spending guardrails that protect your runway."
+        },
+        {
+          "icon": "fa-solid fa-gauge-high",
+          "title": "Financial Models & Business Plans",
+          "body": "Data-driven plans for growth, pricing, new locations, or product lines — with realistic revenue assumptions you can defend."
+        },
+        {
+          "icon": "fa-solid fa-building-columns",
+          "title": "Capital Raising",
+          "body": "Investor-ready financials, pitch-deck numbers, lender materials, SBA and bank loan preparation, and support through due diligence."
+        },
+        {
+          "icon": "fa-solid fa-table-columns",
+          "title": "KPI Dashboards & Board Reporting",
+          "body": "Key performance indicators that matter for your business."
+        },
+        {
+          "icon": "fa-solid fa-scale-balanced",
+          "title": "Accounting Policy & Governance",
+          "body": "Compliance policies across data center CapEx capitalization rules, lease accounting, and revenue recognition, ensuring institutional audit readiness and protecting capital deployment."
+        },
+        {
+          "icon": "fa-solid fa-chart-line",
+          "title": "Cash Flow Forecasting",
+          "body": "Rolling 13-week and 12-month forecasts so you see a cash gap months before it arrives, with a concrete plan to close it."
+        }
+      ]
+    },
+    {
+      "_template": "numberedList",
+      "theme": "soft",
+      "eyebrow": "Financial leadership",
+      "heading": "Gain high-level leadership across four pillars.",
+      "items": [
+        {
+          "number": "01",
+          "title": "Strategic Analysis & Planning",
+          "body": "Translate goals into financial plans, scenarios, and the roadmap to get there."
+        },
+        {
+          "number": "02",
+          "title": "Investment & Capital Structure",
+          "body": "Decide how to fund growth — debt, equity, or reinvestment — and structure it on good terms."
+        },
+        {
+          "number": "03",
+          "title": "Stakeholder Communication",
+          "body": "Board decks, investor updates, and lender conversations, handled by someone who's sat on both sides."
+        },
+        {
+          "number": "04",
+          "title": "Leadership & Decision-Making",
+          "body": "A steady hand on the big calls — hiring, pricing, expansion, and everything with a dollar sign attached."
+        }
+      ]
+    },
+    {
+      "_template": "plans",
+      "eyebrow": "Engagement options",
+      "heading": "Pick the level of CFO support you need today.",
+      "plans": [
+        {
+          "badge": "Most popular",
+          "name": "CFO Advisory",
+          "summary": "A senior finance partner on call for the big decisions.",
+          "features": [
+            {
+              "text": "Regular strategy sessions"
+            },
+            {
+              "text": "Review of financials & KPIs"
+            }
+          ],
+          "fit": "owner-led businesses that want a sounding board.",
+          "featured": true
+        },
+        {
+          "name": "Project CFO",
+          "summary": "A focused engagement with a clear finish line.",
+          "features": [
+            {
+              "text": "Financial model & business plan"
+            },
+            {
+              "text": "Turnaround or cost-reduction plan"
+            },
+            {
+              "text": "Internal Audit & Control Framework"
+            }
+          ],
+          "fit": "a specific event in the next 3–6 months.",
+          "featured": false
+        },
+        {
+          "name": "Fractional CFO",
+          "summary": "Your part-time CFO, running finance alongside your team.",
+          "features": [
+            {
+              "text": "Rolling cash forecast & annual budget"
+            },
+            {
+              "text": "Ongoing CFO reviews"
+            },
+            {
+              "text": "Controls, pricing & hiring analysis"
+            }
+          ],
+          "fit": "growing companies, roughly $1M–$25M in revenue.",
+          "featured": false
+        }
+      ]
+    },
+    {
+      "_template": "ctaBand",
+      "heading": "Not sure which fits? Let's figure it out together.",
+      "body": "Send us a message and we'll help you find the right level of support for where your business is today.",
+      "ctaLabel": "Contact Us",
+      "ctaHref": "/contact"
+    }
+  ]
+}
