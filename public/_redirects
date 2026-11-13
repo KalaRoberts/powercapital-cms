@@ -1,0 +1,7 @@
+# Old hand-built site used .html addresses. Send them to the new ones (permanent).
+/index.html        /             301
+/about.html        /about        301
+/credentials.html  /credentials  301
+/services.html     /services     301
+/industries.html   /industries   301
+/contact.html      /contact      301
