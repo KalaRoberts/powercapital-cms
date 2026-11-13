@@ -1,6 +1,6 @@
 # Power Capital CMS — Project Notes
 
-> Current state of the `powercapital-cms` repo, updated 2026-11-12 (after the Services port). Replaces the
+> Current state of the `powercapital-cms` repo, updated 2026-11-12 (after the Industries port). Replaces the
 > earlier HANDOFF.md. **No secrets in this file.** Tokens live only in TinaCloud
 > and in Cloudflare build settings.
 
@@ -34,7 +34,9 @@ built with **Astro + TinaCMS**. It replaces the hand-written 6-page HTML site.
 - ✅ **Credentials page ported** (`port-credentials` branch, merged). It has Certifications, Education, 6 LinkedIn Recommendations and a closing call-to-action. The wording is kept as-is by choice, including "build-heavy finance" and the share text's "infrastructure finance". It has **no** career timeline; that's only on About.
 - ✅ **Services page ported** (`port-services` branch, merged). It has 8 core-service cards, 4 numbered pillars, and 3 engagement plans with an **editable "Most popular" highlight** (an on/off toggle on each plan). The share text's "capital-intensive builds" is kept as-is by choice.
 - ✅ All cleanup done: old tokens, `pages.dev` and merged-branch Site URLs removed, the Pages project removed, merged branches deleted. **No outstanding housekeeping.**
-- ⬜ Port **Industries**, then **Contact** last (it has the Web3Forms form). Take the real text from the old `powercapital` repo, now at `C:\dev\Powercapital`.
+- ✅ **Industries page ported** (`port-industries` branch, merged). It has 3 industry cards and 4 "Is it time?" sign cards with a closing note. Wording is kept as-is ("build-heavy", "covenant-heavy", "capital-intensive"). The intro reads "data centers construction and real estate", which is missing commas; it's left as-is and can be fixed in the editor.
+- ✅ **Footer tagline is editable site-wide** (Site Settings → Footer tagline, stored in `content/settings/site.json`). Change it once and it updates on every page; it updates live as you type.
+- ⬜ Port **Contact** last (it has the Web3Forms form). Take the real text from the old `powercapital` repo, now at `C:\dev\Powercapital`.
 - ⬜ Check the whole site on Workers, then do the cutover (§7).
 
 ## 3. Versions (what's installed and working)
@@ -56,16 +58,20 @@ Don't use Node 26: Tina's `better-sqlite3` fails to compile on it. Node 20 is en
 ```
 astro.config.mjs        output 'static', cloudflare adapter (imageService passthrough), session:false, tina()
 wrangler.jsonc          Worker name "powercapital-cms" (must match the dashboard), nodejs_compat, previews: {}
-tina/config.ts          schema: "page" collection (content/pages/*.json) with a multi-template `blocks` list
+tina/config.ts          schema: "settings" collection (content/settings/site.json, global, single doc) + "page" collection (content/pages/*.json) with a multi-template `blocks` list
 tina/tina-lock.json     MUST be committed whenever it changes (schema edits, Tina upgrades)
-content/pages/*.json    page content (SEO fields + ordered blocks): home.json, about.json, credentials.json, services.json
-src/lib/tina/data.ts    getPage(slug) -> requestWithMetadata(client.queries.page(...))
-src/lib/tina/islands.ts editable-region registry ("page" island -> PageBlocks)
+content/pages/*.json    page content (SEO fields + ordered blocks): home.json, about.json, credentials.json, services.json, industries.json
+content/settings/site.json   site-wide settings: footerTagline
+src/lib/tina/data.ts    getPage(slug) and getSettings() -> requestWithMetadata(client.queries...)
+src/lib/tina/islands.ts editable-region registry: "page" -> PageBlocks, "footer" -> FooterContent
 src/pages/tina-island/[name].ts   editor-only on-demand route (prerender = false)
 src/pages/index.astro   Home: loads the page via Tina, wraps <PageBlocks> in <TinaIsland ... primary>
 src/pages/about.astro   About: same pattern, slug "about", Person JSON-LD
 src/pages/credentials.astro   Credentials: same pattern, slug "credentials"
 src/pages/services.astro      Services: same pattern, slug "services"
+src/pages/industries.astro    Industries: same pattern, slug "industries"
+src/components/Footer.astro         loads Site Settings, wraps FooterContent in <TinaIsland name="footer"> (not primary)
+src/components/FooterContent.astro  footer markup; tagline tagged with data-tina-field
 src/components/PageBlocks.astro   maps each block to a component (accepts _template or __typename)
 src/components/blocks/*.astro     section components; each text element has data-tina-field
 src/lib/inline.ts       inline(): **bold** in text fields -> <strong>; localImg(): fixes TinaCloud image paths
@@ -78,14 +84,14 @@ public/assets/js/main.js site JS (nav, scroll reveal, contact form)
 | Template | Component | Used on | Notes |
 |---|---|---|---|
 | `hero` | Hero | Home | big hero with portrait, stats, badge |
-| `painPoints` | PainPoints | Home | eyebrow, heading, lead + cards |
+| `painPoints` | PainPoints | Home, Industries | accent-bordered cards. Options: background `theme` (plain/mint/soft), `columns` (3 or 2), `centered` heading, optional closing `note`; card body accepts **bold** |
 | `positioningBanner` | PositioningBanner | Home | navy/mint centered banner |
 | `process` | Process | Home | numbered steps + button |
-| `ctaBand` | CtaBand | Home, About, Credentials, Services | closing call to action |
-| `pageHero` | PageHero | About, Credentials, Services | interior-page title banner with breadcrumb |
+| `ctaBand` | CtaBand | Home, About, Credentials, Services, Industries | closing call to action |
+| `pageHero` | PageHero | About, Credentials, Services, Industries | interior-page title banner with breadcrumb |
 | `bio` | Bio | About | photo + paragraphs + checklist + button |
 | `timeline` | Timeline | About | career timeline (first item = green dot) |
-| `featureCards` | FeatureCards | About, Credentials, Services | icon cards. Options: background `theme` (soft/mint/plain), `columns` (3 or 2), optional `lead`; each card has icon, title, optional grey `subtitle`, body (**bold** OK) |
+| `featureCards` | FeatureCards | About, Credentials, Services, Industries | icon cards. Options: background `theme` (soft/mint/plain), `columns` (3 or 2), `cardStyle` ("card" default, or "industry" = gradient top stripe + hover lift), optional `lead`; each card has icon, title, optional grey `subtitle`, body (**bold** OK) |
 | `textSection` | TextSection | About | centered eyebrow, heading, paragraph |
 | `recommendations` | Recommendations | Credentials | quote cards: eyebrow, heading, lead + list of {quote, name, role} |
 | `numberedList` | NumberedList | Services | numbered "pillars": background theme + list of {number, title, body} |
@@ -94,6 +100,9 @@ public/assets/js/main.js site JS (nav, scroll reveal, contact form)
 Reuse these before creating new ones. Fields marked "use **bold**" accept `**text**` for emphasis.
 
 **Rule: every list must be a list of objects, not a list of plain strings.** Example: `{ type: "object", list: true, fields: [{ name: "text", ... }] }`, rendered with `tinaField(item, "text")`. Plain string lists (`type: "string", list: true`) can be clicked and saved, but **live typing doesn't refresh them**. We hit this on the About bio paragraphs and checklist.
+
+### Site-wide (global) content
+The footer tagline lives in the **settings** collection, not in a page. Add more site-wide text (footer links, contact email, etc.) as fields there. Render it in `FooterContent.astro` (or another component) with `tinaField(settings, "<field>")`. Pages mark their own `<TinaIsland ... primary>`, so the editor opens the page's sections first; the footer island is not primary.
 
 ### Adding a new page (pattern)
 1. Add any new block templates to `tina/config.ts` and register them in `PageBlocks.astro`.
@@ -152,7 +161,7 @@ Only after all 6 pages are ported and checked on Workers:
 
 ## 8. Housekeeping
 
-**Nothing outstanding** as of 2026-11-12. Done: old TinaCloud tokens deleted; `pages.dev` and merged-branch Site URLs removed; the Cloudflare Pages project removed; merged branches deleted (`live-editing`, `port-about`, `port-credentials`, `port-services`).
+**Nothing outstanding** as of 2026-11-12. Done: old TinaCloud tokens deleted; `pages.dev` and merged-branch Site URLs removed; the Cloudflare Pages project removed; merged branches deleted (`live-editing`, `port-about`, `port-credentials`, `port-services`, `port-industries`).
 
 TinaCloud **Site URLs** should contain only `http://localhost:4321` and `https://powercapital-cms.jr-1791.workers.dev`, plus the preview of whatever branch is in progress. At cutover, add `https://powercapital.cloud` and `https://www.powercapital.cloud`.
 
@@ -170,6 +179,7 @@ Then remove its preview address from TinaCloud → Site URLs. Deleted branches m
 - Facts: 16 yrs in finance (15 at AWS/Amazon, 2010–2025); led $12B/yr data center capex; $1B+ P&L (AWS Networking); market cap 4,241% ($56.9B → $2.47T); President of Power Capital Consulting LLC since Jun 2025; CFI certs in Construction Finance and Real Estate Appraisal; UW Foster (Grad Accounting Cert); Appalachian State (BS Intl Business, Magna Cum Laude).
 - About page: vertical career timeline (current role = green dot, Amazon roles = orange dots).
 - Credentials page: CFI certifications, education, and 6 LinkedIn recommendations (no timeline).
+- Footer tagline (editable in Site Settings): "Fractional CFO leadership for growing companies investing in Data Center Construction."
 - Contact: Web3Forms (hCaptcha on). Fields: Name, Email, Company (optional), Service, Message. Services: CFO Advisory / Project CFO / Fractional CFO. Animated "Message sent!" with no page reload. **No free calls.**
-- Footer: "Fractional CFO leadership for growing companies investing in Data Center Construction." + "Designed and built by Kala Roberts" → https://kalaroberts.github.io/
+- Footer: tagline (above) + "Designed and built by Kala Roberts" → https://kalaroberts.github.io/. Links, LinkedIn and copyright are fixed in code.
 - SEO: canonical tags, Open Graph and Twitter cards, JSON-LD (ProfessionalService on Home, Person on About), page titles "Power Capital: <Page>".

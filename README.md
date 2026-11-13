@@ -3,7 +3,7 @@
 The website for **Power Capital**, the fractional-CFO practice of John Roberts. It's built with **Astro**, with a **TinaCMS / TinaCloud** content layer, so non-technical editors can update the site in a visual editor. They click text on the page, type, and see the change straight away. No code is needed.
 
 **Live site (current):** https://powercapital.cloud is still served by the original static-HTML repo. This repo is in the build/preview phase and takes over the domain at cutover.
-**Pages ported:** Home, About, Credentials, Services. Still to do: Industries, Contact.
+**Pages ported:** Home, About, Credentials, Services, Industries. Still to do: Contact.
 **Stack:** Astro 7 (prerendered pages) · TinaCMS 3 + TinaCloud · `@tinacms/astro` live visual editing · Cloudflare Workers · vanilla CSS/JS
 
 > Maintainers: see **[PROJECT-NOTES.md](PROJECT-NOTES.md)** for versions, the full workflow, known issues and fixes, and the cutover checklist.
@@ -37,6 +37,7 @@ content/pages/home.json   →   { title, description, ogTitle, ogDescription, bl
 Sections are a **reorderable list that items can be added to or removed from**, so in `/admin` an editor can:
 - Click any headline, paragraph, card, stat, or button and edit it, with the page updating as they type
 - Swap images
+- Edit the **footer tagline** once (Site Settings) and have it change on every page
 - **Reorder**, **add**, or **remove** sections, and add or remove items in lists (stats, cards, steps)
 
 The underlying setup (SEO tags, Google Analytics, favicons, fonts, the contact-form integration) lives in code (`src/layouts/BaseLayout.astro`). It is deliberately **not** editable in the CMS, so the layout and integrations can't be broken from there.
@@ -57,7 +58,8 @@ powercapital-cms/
 ├── tina/
 │   ├── config.ts           # TinaCMS schema: "page" collection + section block templates
 │   └── tina-lock.json      # generated; MUST be committed whenever it changes
-├── content/pages/          # editable page content as JSON (home.json, about.json, credentials.json, services.json, …)
+├── content/pages/          # editable page content as JSON (home.json, about.json, credentials.json, services.json, industries.json, …)
+├── content/settings/site.json # site-wide settings (footer tagline)
 ├── scripts/copy-bridge.mjs # dev-only: puts Tina's bridge.js in public/admin
 ├── src/
 │   ├── layouts/BaseLayout.astro    # <head>, SEO, Open Graph, GA4, fonts, Header + Footer
@@ -65,7 +67,7 @@ powercapital-cms/
 │   ├── lib/tina/islands.ts         # editable-region registry
 │   ├── lib/inline.ts               # **bold** support + TinaCloud image-path fix
 │   ├── components/
-│   │   ├── Header.astro · Footer.astro
+│   │   ├── Header.astro · Footer.astro · FooterContent.astro
 │   │   ├── PageBlocks.astro        # renders a page's blocks
 │   │   └── blocks/                 # one component per section type (Hero, PainPoints, PageHero, Bio, Timeline, Recommendations, NumberedList, Plans, …)
 │   ├── pages/
@@ -73,6 +75,7 @@ powercapital-cms/
 │   │   ├── about.astro             # About
 │   │   ├── credentials.astro       # Credentials
 │   │   ├── services.astro          # Services
+│   │   ├── industries.astro        # Industries
 │   │   └── tina-island/[name].ts   # editor-only on-demand route
 │   └── styles/global.css           # the design system
 └── public/
@@ -109,7 +112,7 @@ npx tinacms build --local --skip-cloud-checks -c "astro build"
 
 The Worker `powercapital-cms` is connected to this repo through Workers Builds:
 
-- **Production branch:** `main` → `https://powercapital-cms.jr-1791.workers.dev` (Home at `/`, pages at `/about`, `/credentials`, `/services`, …)
+- **Production branch:** `main` → `https://powercapital-cms.jr-1791.workers.dev` (Home at `/`, pages at `/about`, `/credentials`, `/services`, `/industries`, …)
 - **Every other branch** gets its own **Preview** at `https://<branch>-powercapital-cms.jr-1791.workers.dev`, listed in the Worker's *Previews* section. It shows the whole site as of that branch.
 - **Build command:** `npm run build`
 - **Deploy command:** `npx wrangler deploy` · **Preview command:** `npx wrangler preview`
