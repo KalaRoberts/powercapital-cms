@@ -1,6 +1,6 @@
 # Power Capital CMS — Project Notes
 
-> Current state of the `powercapital-cms` repo, updated 2026-11-12 (after the About port). Replaces the
+> Current state of the `powercapital-cms` repo, updated 2026-11-12 (after the Credentials port). Replaces the
 > earlier HANDOFF.md. **No secrets in this file.** Tokens live only in TinaCloud
 > and in Cloudflare build settings.
 
@@ -15,8 +15,8 @@ built with **Astro + TinaCMS**. It replaces the hand-written 6-page HTML site.
 | This repo | `github.com/KalaRoberts/powercapital-cms` |
 | Old site (rollback + source of real page text) | `github.com/KalaRoberts/powercapital` |
 | Hosting | **Cloudflare Workers** (Worker name `powercapital-cms`) |
-| Production (`main`) | `https://powercapital-cms.jr-1791.workers.dev` |
-| Branch previews | One per branch, listed under the Worker's **Previews** section |
+| Production (`main`) | `https://powercapital-cms.jr-1791.workers.dev` (Home at `/`, then `/about`, `/credentials`, …) |
+| Branch previews | `https://<branch>-powercapital-cms.jr-1791.workers.dev`, listed under the Worker's **Previews** section. Each one shows the **whole site as of that branch** (Home at `/`, the ported page at `/<slug>`). |
 | TinaCloud project | "Power Capital Site", client ID `aa8e00fd-4923-40cc-abc5-791d41d0f1d7` (public) |
 | GA4 | `G-ZZ170WEYFW` (in `BaseLayout.astro`) |
 
@@ -31,7 +31,9 @@ built with **Astro + TinaCMS**. It replaces the hand-written 6-page HTML site.
 
 - ✅ Home page ported, with live editing on Workers (`live-editing` branch, merged).
 - ✅ **About page ported** (`port-about` branch, merged). It includes the 9-role career timeline. The Philosophy text was changed from "heavy-capital builds" to "data-center and cloud-infrastructure builds".
-- ⬜ Port **Credentials, Services, Industries**, then **Contact** last (it has the Web3Forms form). Take the real text from the old `powercapital` repo, now at `C:\dev\Powercapital`.
+- ✅ **Credentials page ported** (`port-credentials` branch, merged). It has Certifications, Education, 6 LinkedIn Recommendations and a closing call-to-action. The wording is kept as-is by choice, including "build-heavy finance" and the share text's "infrastructure finance". It has **no** career timeline; that's only on About.
+- ✅ Cleanup done: old tokens and `pages.dev` Site URLs removed, the Pages project removed, merged branches deleted.
+- ⬜ Port **Services, Industries**, then **Contact** last (it has the Web3Forms form). Take the real text from the old `powercapital` repo, now at `C:\dev\Powercapital`.
 - ⬜ Check the whole site on Workers, then do the cutover (§7).
 
 ## 3. Versions (what's installed and working)
@@ -55,12 +57,13 @@ astro.config.mjs        output 'static', cloudflare adapter (imageService passth
 wrangler.jsonc          Worker name "powercapital-cms" (must match the dashboard), nodejs_compat, previews: {}
 tina/config.ts          schema: "page" collection (content/pages/*.json) with a multi-template `blocks` list
 tina/tina-lock.json     MUST be committed whenever it changes (schema edits, Tina upgrades)
-content/pages/*.json    page content (SEO fields + ordered blocks): home.json, about.json
+content/pages/*.json    page content (SEO fields + ordered blocks): home.json, about.json, credentials.json
 src/lib/tina/data.ts    getPage(slug) -> requestWithMetadata(client.queries.page(...))
 src/lib/tina/islands.ts editable-region registry ("page" island -> PageBlocks)
 src/pages/tina-island/[name].ts   editor-only on-demand route (prerender = false)
 src/pages/index.astro   Home: loads the page via Tina, wraps <PageBlocks> in <TinaIsland ... primary>
 src/pages/about.astro   About: same pattern, slug "about", Person JSON-LD
+src/pages/credentials.astro   Credentials: same pattern, slug "credentials"
 src/components/PageBlocks.astro   maps each block to a component (accepts _template or __typename)
 src/components/blocks/*.astro     section components; each text element has data-tina-field
 src/lib/inline.ts       inline(): **bold** in text fields -> <strong>; localImg(): fixes TinaCloud image paths
@@ -76,12 +79,13 @@ public/assets/js/main.js site JS (nav, scroll reveal, contact form)
 | `painPoints` | PainPoints | Home | eyebrow, heading, lead + cards |
 | `positioningBanner` | PositioningBanner | Home | navy/mint centered banner |
 | `process` | Process | Home | numbered steps + button |
-| `ctaBand` | CtaBand | Home, About | closing call to action |
-| `pageHero` | PageHero | About | interior-page title banner with breadcrumb |
+| `ctaBand` | CtaBand | Home, About, Credentials | closing call to action |
+| `pageHero` | PageHero | About, Credentials | interior-page title banner with breadcrumb |
 | `bio` | Bio | About | photo + paragraphs + checklist + button |
 | `timeline` | Timeline | About | career timeline (first item = green dot) |
-| `featureCards` | FeatureCards | About | icon cards (Font Awesome class) with background theme |
+| `featureCards` | FeatureCards | About, Credentials | icon cards. Options: background `theme` (soft/mint/plain), `columns` (3 or 2), optional `lead`; each card has icon, title, optional grey `subtitle`, body (**bold** OK) |
 | `textSection` | TextSection | About | centered eyebrow, heading, paragraph |
+| `recommendations` | Recommendations | Credentials | quote cards: eyebrow, heading, lead + list of {quote, name, role} |
 
 Reuse these before creating new ones. Fields marked "use **bold**" accept `**text**` for emphasis.
 
@@ -142,18 +146,24 @@ Only after all 6 pages are ported and checked on Workers:
 3. Add `https://powercapital.cloud` and `https://www.powercapital.cloud` to TinaCloud Site URLs.
 4. Submit `sitemap.xml` in Google Search Console (optional).
 
-## 8. Cleanup still to do
+## 8. Housekeeping
 
-- TinaCloud: delete old tokens and remove the `pages.dev` Site URLs.
-- Cloudflare: delete the old **Pages** project `powercapital-cms`, or turn off its builds. **Not the Worker with the same name.**
-- Check that **Previews Base** holds both Tina settings, so new branch previews don't need them added by hand.
+Done (2026-11-12): old TinaCloud tokens deleted, `pages.dev` Site URLs removed, the Cloudflare Pages project removed, merged branches deleted (`live-editing`, `port-about`, `port-credentials`).
+
+After merging each future branch:
+```powershell
+git branch -d <branch>
+git push origin --delete <branch>
+```
+Then remove its preview address from TinaCloud → Site URLs.
 
 ## 9. Content reference (for porting)
 
 - Palette: navy + forest green, burnt-orange accent. Fonts: Lora (headings) and Inter (body).
 - Voice: company ("we", "our President"). Niche: finance leadership for cloud infrastructure, data center construction, and real estate.
 - Facts: 16 yrs in finance (15 at AWS/Amazon, 2010–2025); led $12B/yr data center capex; $1B+ P&L (AWS Networking); market cap 4,241% ($56.9B → $2.47T); President of Power Capital Consulting LLC since Jun 2025; CFI certs in Construction Finance and Real Estate Appraisal; UW Foster (Grad Accounting Cert); Appalachian State (BS Intl Business, Magna Cum Laude).
-- Credentials page: vertical career timeline (current role = green dot, Amazon roles = orange dots) and 6 LinkedIn recommendations.
+- About page: vertical career timeline (current role = green dot, Amazon roles = orange dots).
+- Credentials page: CFI certifications, education, and 6 LinkedIn recommendations (no timeline).
 - Contact: Web3Forms (hCaptcha on). Fields: Name, Email, Company (optional), Service, Message. Services: CFO Advisory / Project CFO / Fractional CFO. Animated "Message sent!" with no page reload. **No free calls.**
 - Footer: "Fractional CFO leadership for growing companies investing in Data Center Construction." + "Designed and built by Kala Roberts" → https://kalaroberts.github.io/
 - SEO: canonical tags, Open Graph and Twitter cards, JSON-LD (ProfessionalService on Home, Person on About), page titles "Power Capital: <Page>".

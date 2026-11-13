@@ -51,7 +51,14 @@ git pull
 git merge port-about --no-edit
 git push
 ```
-`main` builds to `https://powercapital-cms.jr-1791.workers.dev`. That's still **not** `powercapital.cloud`.
+`main` builds to `https://powercapital-cms.jr-1791.workers.dev` (Home at `/`, other pages at `/<slug>`). That's still **not** `powercapital.cloud`.
+
+### 7. Tidy up
+```powershell
+git branch -d port-about
+git push origin --delete port-about
+```
+Remove the branch's preview address from TinaCloud **Site URLs**.
 
 ---
 
