@@ -68,7 +68,7 @@ Check each page side by side with the live `powercapital.cloud`.
 **Recommended approach: the client owns their own TinaCloud project.**
 1. **Client creates a GitHub account**, if they don't have one.
 2. **Kala adds the client to the repo:** GitHub → `KalaRoberts/powercapital-cms` → Settings → Collaborators → Add people (role: **Write**). The client accepts the email invite.
-   - Alternative: transfer the repo to the client's GitHub account. That's cleaner ownership, but every connection (Cloudflare, TinaCloud) then needs reconnecting. Decide before cutover, not after.
+   - **Decided (2026-11-12): the repo stays in Kala's account** (`KalaRoberts`). The client gets Write access only; Cloudflare and the existing connections stay as they are.
 3. **Client creates a TinaCloud account** at app.tina.io, signing in with GitHub.
 4. **Client creates a TinaCloud project** connected to `powercapital-cms`:
    - Path to Tina folder: **blank**
