@@ -92,7 +92,7 @@ If you want to give the second seat to Kala, follow these steps:
 ## Step 6: Try the editor (after Kala confirms the connection)
 
 **Your everyday editing address is:**
-**https://powercapital.cloud/admin/index.html#/~/**
+**https://powercapital.cloud/admin**
 
 Kala may also ask you to use **https://powercapital-cms.jr-1791.workers.dev/admin/index.html#/~/**. That address is only for testing and troubleshooting, for example if the main address isn't working yet or Kala is checking a problem. Otherwise, always edit from the powercapital.cloud address above.
 
