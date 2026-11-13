@@ -1,107 +1,87 @@
-# Preview Setup — Validate the Home page (Astro + TinaCMS on Cloudflare Pages)
+# Preview Setup — Branch previews on Cloudflare Workers
 
-Goal: get the new Astro site building on a **Cloudflare Pages preview URL** — with
-the **TinaCloud editor** working — so we can validate the Home page before porting
-the other pages. **No terminal / no local npm required.** Your current live site on
-GitHub Pages stays untouched the whole time.
+How to work on a change (for example, porting a page) on its own branch and check it on a **Cloudflare Workers preview**, with the **Tina live editor** working, before it goes to `main`. The live site at `powercapital.cloud` (GitHub Pages) is never touched.
 
----
-
-## Overview of the flow
-1. Put this project in a **new GitHub repo** named `powercapital-cms`.
-2. Create a **TinaCloud project** pointed at that repo → get a Client ID + token.
-3. Create a **Cloudflare Pages** project pointed at the same repo, with the build
-   command + the two Tina env vars.
-4. Cloudflare builds it and gives you a **preview URL**. Open it, check the Home page,
-   and open `/admin` to try the editor.
+> One-time setup (Worker, TinaCloud project, build variables) is already done. It's described at the end in case it ever has to be redone.
 
 ---
 
-## Step 1 — Put the project in GitHub (web upload, no terminal)
+## Per-change workflow
 
-Keep it separate from your current site repo so nothing live is affected.
+### 1. Create a branch
+```powershell
+cd C:\dev\powercapital-cms
+git checkout main
+git pull
+git checkout -b port-about        # one branch per piece of work
+```
 
-1. Go to **https://github.com/new** → name it `powercapital-cms` → **Public** (or Private;
-   both work with Cloudflare + Tina) → **Create repository**.
-2. On the empty repo page → **uploading an existing file**.
-3. In Finder, open `~/powercapital-astro` (the local project folder — copy it out of the session workspace
-   first, same as before). Select **all contents** — including the `src`, `public`,
-   `content`, `tina` **folders** — and drag them in. Commit.
-   - The web uploader preserves subfolders when you drag the top-level folders in.
-   - Dotfiles like `.gitignore` / `.env.example` may not drag; that's fine.
-   - **Do NOT upload** a `.env` file or your token — those go in env vars only (Step 3).
+### 2. Work and test locally
+```powershell
+npm run dev
+```
+- Site: `http://localhost:4321`
+- Editor: `http://localhost:4321/admin/index.html#/~/`. Click text, type, and check the page updates.
 
-> If the folder upload is fussy in the browser, this is the one place GitHub Desktop
-> (no terminal, syncs folders flawlessly) is worth it — but web upload works.
+### 3. Commit and push
+Name the files in `git add` (avoid `git add .`). If `tina/tina-lock.json` changed, **commit it**: the cloud build fails without it.
+```powershell
+git status
+git add <the files you changed> tina/tina-lock.json
+git commit -m "Port About page"
+git push -u origin port-about
+```
 
----
+### 4. TinaCloud
+1. **app.tina.io → Power Capital Site → Configuration → Refresh Branches.** Wait for the new branch to show as indexed.
+2. **Site URLs:** add the branch's preview address (step 5) so the editor can log in there.
 
-## Step 2 — Create the TinaCloud project
+### 5. Check the Cloudflare preview
+1. **Workers & Pages → `powercapital-cms` (the Worker) → Previews.** Open the branch's preview address.
+2. Check the pages look right.
+3. Open `<preview address>/admin/index.html#/~/`, log in, click a heading, and type. The page should update live.
+   - If it doesn't, press F12 → Network → filter `tina-island`. It should return **200**.
+4. Build failed? Open the build under *Deployments → View build history* and copy the log.
 
-1. Go to **https://app.tina.io** and sign in to your TinaCloud account.
-2. **Create a project** → **Connect to GitHub** → authorize and pick the
-   `powercapital-cms` repo.
-3. Set the **branch** TinaCloud tracks to **`main`**.
-4. From the project's **Overview**, copy the **Client ID**.
-5. Go to **Tokens** → create/copy a **Read-Only Token**.
-
-Keep these two values handy for Step 3:
-- `NEXT_PUBLIC_TINA_CLIENT_ID` = the Client ID
-- `TINA_TOKEN` = the Read-Only token
-
----
-
-## Step 3 — Create the Cloudflare Pages project
-
-1. Go to **https://dash.cloudflare.com** → **Workers & Pages** → **Create** →
-   **Pages** → **Connect to Git**.
-2. Pick the `powercapital-cms` repo → **Begin setup**.
-3. Build settings:
-   - **Framework preset:** Astro
-   - **Build command:** `npm run build`
-   - **Build output directory:** `dist`
-4. **Environment variables** (expand "Environment variables (advanced)") — add BOTH,
-   for **Production AND Preview**:
-   - `NEXT_PUBLIC_TINA_CLIENT_ID` = (your Client ID)
-   - `TINA_TOKEN` = (your read-only token)
-5. **Save and Deploy.**
-
-Cloudflare runs `npm install` + `npm run build` on their servers. First build takes a
-couple of minutes. When it finishes you get a URL like
-`https://powercapital-cms.pages.dev` (production) and per-commit preview URLs.
+### 6. Merge into `main`
+```powershell
+git checkout main
+git pull
+git merge port-about --no-edit
+git push
+```
+`main` builds to `https://powercapital-cms.jr-1791.workers.dev`. That's still **not** `powercapital.cloud`.
 
 ---
 
-## Step 4 — Validate
+## Common build errors
 
-- Open the deployed URL → confirm the **Home page** renders correctly (hero, pain
-  points, navy banner, how-it-works, CTA, header/footer, logo, fonts).
-- Open **`/admin`** on that same URL → the **TinaCMS editor** loads. Open the Home
-  page and confirm you can edit text, reorder/add/remove sections, and that fields
-  look right.
+| Error | Fix |
+|---|---|
+| "Branch is not on TinaCloud" | Commit `tina/tina-lock.json`, push, then **Refresh Branches**. |
+| 403 "not authorized to access branch" | The TinaCloud token's branch access must be `*`. |
+| "local GraphQL schema doesn't match remote" | `tina/tina-lock.json` changed but wasn't committed. |
+| "Missing clientId, token" | Set both variables in *Settings → Build → Build variables and secrets* for **Production and Preview**. |
+| Editor: "config is missing for domain" | Add that exact address to TinaCloud **Site URLs**. |
 
-> The `/admin` editor only works once the TinaCloud Client ID + token are set
-> (Step 3). Without them the site still renders, but the editor won't load.
+More in **PROJECT-NOTES.md §6**.
+
+---
+
+## One-time setup (reference)
+
+1. **TinaCloud:** project "Power Capital Site" connected to `KalaRoberts/powercapital-cms`. *Path to Tina Folder* left **blank**. Content token with branch access `*`.
+2. **Cloudflare:** *Workers & Pages → Create application → GitHub →* `powercapital-cms`
+   - Worker name `powercapital-cms` (must match `wrangler.jsonc`)
+   - Production branch `main` · preview builds **on** for other branches
+   - Build `npm run build` · Deploy `npx wrangler deploy` · Preview `npx wrangler preview`
+   - Build variables and secrets (Production **and** Preview): `NEXT_PUBLIC_TINA_CLIENT_ID`, `TINA_TOKEN` (secret)
+3. **TinaCloud Site URLs:** `http://localhost:4321`, the production `workers.dev` address, and each branch preview.
 
 ---
 
 ## Important notes
 
-- **This does NOT touch your live site.** `powercapital.cloud` keeps pointing at the
-  current GitHub Pages site until we deliberately switch DNS at the very end.
-- **`CNAME` file:** this project's `public/CNAME` contains `powercapital.cloud`. Leave
-  it alone for now — we only use it when we cut the domain over to Cloudflare at the
-  end. (It's harmless on the `.pages.dev` preview.)
-- **If a build fails:** open the Cloudflare build log, copy the error, and send it over
-  — we fix the code and you re-push. That's the debugging loop.
-- **Secrets:** never commit `.env` or the token to the repo. They live only in
-  Cloudflare's env-var settings.
-
----
-
-## What to report back
-- Does the Home page render correctly on the preview URL?
-- Does `/admin` load and let you edit / reorder sections?
-- Any build errors (paste the log)?
-
-Once Home checks out, we port the other five pages using the same pattern.
+- **powercapital.cloud is untouched** until the deliberate DNS cutover (PROJECT-NOTES.md §7).
+- **`public/CNAME`** holds `powercapital.cloud` for that cutover. Leave it alone.
+- **Secrets:** never commit `.env` or a token. They live only in Cloudflare build settings.

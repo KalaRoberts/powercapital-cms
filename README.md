@@ -1,46 +1,48 @@
 # Power Capital — CMS Site (Astro + TinaCMS)
 
-The marketing website for **Power Capital**, the fractional-CFO practice of John Roberts, rebuilt as an **Astro** static site with a **TinaCMS / TinaCloud** content layer so non-technical editors can update the site through a visual editor — no code required.
+The website for **Power Capital**, the fractional-CFO practice of John Roberts. It's built with **Astro**, with a **TinaCMS / TinaCloud** content layer, so non-technical editors can update the site in a visual editor. They click text on the page, type, and see the change straight away. No code is needed.
 
-**Live site (current):** https://powercapital.cloud — served by the original static-HTML repo. This Astro + TinaCMS repo is in the build/preview phase and will take over the domain at cutover.
-**Stack:** Astro (static output) · TinaCMS + TinaCloud · Cloudflare Pages · vanilla CSS/JS
+**Live site (current):** https://powercapital.cloud is still served by the original static-HTML repo. This repo is in the build/preview phase and takes over the domain at cutover.
+**Stack:** Astro 7 (prerendered pages) · TinaCMS 3 + TinaCloud · `@tinacms/astro` live visual editing · Cloudflare Workers · vanilla CSS/JS
+
+> Maintainers: see **[PROJECT-NOTES.md](PROJECT-NOTES.md)** for versions, the full workflow, known issues and fixes, and the cutover checklist.
 
 ---
 
 ## Why this repo exists
 
-The site originally shipped as hand-authored static HTML (a separate repo deployed on GitHub Pages). Once the design and content were settled, it was migrated here into Astro so that:
+The site first shipped as hand-written static HTML (a separate repo on GitHub Pages). It was moved here so that:
 
-- **A non-technical person can edit every page** — all copy, images, and page structure — through TinaCMS's visual editor, with changes committed back to this repo automatically.
-- **The site stays fast and static** — Astro outputs plain HTML/CSS/JS; there's no server to run.
-- **Hosting runs the build automatically** — Cloudflare Pages builds and deploys on every push.
+- **A non-technical person can edit every page** (all text, images, and page structure) in TinaCMS's visual editor. Changes are committed back to this repo automatically.
+- **The site stays fast:** every visitor-facing page is prerendered to plain HTML/CSS/JS.
+- **Hosting builds itself:** Cloudflare Workers Builds builds and deploys on every push, and each branch gets its own preview.
 
-This repo is the **permanent home** of the live site. (The original hand-HTML repo is kept only as a short-term rollback.)
+This repo is the **permanent home** of the live site. The original HTML repo is kept only as a short-term rollback.
 
 ---
 
 ## How content editing works
 
-Every page is data-driven. Instead of hardcoding copy into templates, each page's content lives in a JSON file under `content/pages/`, structured as an ordered list of **section blocks**:
+Every page is data-driven. Each page's content is a JSON file under `content/pages/`, structured as an ordered list of **section blocks**:
 
 ```
-content/pages/home.json   →   { title, description, blocks: [ hero, painPoints, ... ] }
+content/pages/home.json   →   { title, description, ogTitle, ogDescription, blocks: [ hero, painPoints, ... ] }
 ```
 
-- `src/pages/*.astro` reads the page's JSON and renders each block by mapping its
-  `_template` to a component in `src/components/blocks/`.
-- `tina/config.ts` defines the editing **schema** — the fields an editor sees, and the
-  set of section types available.
+- `tina/config.ts` defines the editing **schema**: the fields an editor sees and the section types available.
+- `src/pages/*.astro` loads its page **through Tina** (`src/lib/tina/data.ts`). It wraps the sections in `<TinaIsland>` and renders them with `src/components/PageBlocks.astro`.
+- Each section component in `src/components/blocks/` tags its editable elements with `data-tina-field`. That's what makes them clickable in the editor.
 
-Because sections are a **reorderable, add/removable list**, an editor can (via `/admin`):
-- Edit any headline, paragraph, card, or button
+Sections are a **reorderable list that items can be added to or removed from**, so in `/admin` an editor can:
+- Click any headline, paragraph, card, stat, or button and edit it, with the page updating as they type
 - Swap images
-- **Reorder** sections, **show/hide** them, and **add/remove** items in repeatable lists
-  (stats, cards, steps)
+- **Reorder**, **add**, or **remove** sections, and add or remove items in lists (stats, cards, steps)
 
-Structural plumbing — SEO tags, Google Analytics, favicons, fonts, the contact-form
-integration — lives in code (`src/layouts/BaseLayout.astro`) and is intentionally **not**
-editable, so the layout and integrations can't be broken from the CMS.
+The underlying setup (SEO tags, Google Analytics, favicons, fonts, the contact-form integration) lives in code (`src/layouts/BaseLayout.astro`). It is deliberately **not** editable in the CMS, so the layout and integrations can't be broken from there.
+
+### How live editing works (and why Workers)
+
+Pages are prerendered. When a page is opened inside the Tina editor, a small script (`/admin/bridge.js`) asks the site for an up-to-date copy of each section as you type. It does that through one on-demand route, `src/pages/tina-island/[name].ts`. That route needs a server, which is why the site runs on **Cloudflare Workers** instead of Cloudflare Pages: Pages only serves fixed files, and live editing fails there. Ordinary visitors never call the route.
 
 ---
 
@@ -48,31 +50,37 @@ editable, so the layout and integrations can't be broken from the CMS.
 
 ```
 powercapital-cms/
-├── astro.config.mjs        # Astro config (static output, site = powercapital.cloud)
-├── package.json            # scripts: dev (tinacms + astro), build (tinacms build && astro build)
+├── astro.config.mjs        # static output + Cloudflare adapter + tina() integration
+├── wrangler.jsonc          # Cloudflare Workers config (Worker name must match the dashboard)
+├── package.json            # dev: copy bridge + tinacms dev + astro dev · build: tinacms build && astro build
 ├── tina/
-│   └── config.ts           # TinaCMS schema: the "page" collection + section block templates
-├── content/
-│   └── pages/              # editable page content as JSON (home.json, …)
+│   ├── config.ts           # TinaCMS schema: "page" collection + section block templates
+│   └── tina-lock.json      # generated; MUST be committed whenever it changes
+├── content/pages/          # editable page content as JSON (home.json, …)
+├── scripts/copy-bridge.mjs # dev-only: puts Tina's bridge.js in public/admin
 ├── src/
-│   ├── layouts/
-│   │   └── BaseLayout.astro # <head>, SEO, Open Graph, Google Analytics (GA4), fonts, Header + Footer
+│   ├── layouts/BaseLayout.astro    # <head>, SEO, Open Graph, GA4, fonts, Header + Footer
+│   ├── lib/tina/data.ts            # Tina data loaders (requestWithMetadata)
+│   ├── lib/tina/islands.ts         # editable-region registry
 │   ├── components/
 │   │   ├── Header.astro · Footer.astro
-│   │   └── blocks/          # one component per section type (Hero, PainPoints, …)
-│   ├── pages/              # Astro routes; each reads its JSON and renders blocks
-│   └── styles/global.css   # the full design system (ported from the original site)
+│   │   ├── PageBlocks.astro        # renders a page's blocks
+│   │   └── blocks/                 # one component per section type (Hero, PainPoints, …)
+│   ├── pages/
+│   │   ├── index.astro             # Home
+│   │   └── tina-island/[name].ts   # editor-only on-demand route
+│   └── styles/global.css           # the design system
 └── public/
-    ├── assets/img/         # logo, favicons, portraits, OG image
-    ├── assets/js/main.js   # nav toggle, sticky header, scroll reveals, contact form
-    ├── robots.txt · sitemap.xml · site.webmanifest · CNAME
+    ├── assets/img/          # logo, favicons, portraits, OG image
+    ├── assets/js/main.js    # nav toggle, sticky header, scroll reveals, contact form
+    └── robots.txt · sitemap.xml · site.webmanifest · CNAME
 ```
 
 ---
 
 ## Local development
 
-Requires Node.js. Install dependencies and run the dev server (which runs TinaCMS alongside Astro):
+Requires **Node 22** (see `.nvmrc`; on Windows use nvm-windows: `nvm use 22`). Don't use Node 26.
 
 ```bash
 npm install
@@ -80,46 +88,49 @@ npm run dev
 ```
 
 - Site: `http://localhost:4321`
-- Visual editor: `http://localhost:4321/admin`
+- Visual editor: `http://localhost:4321/admin/index.html#/~/`
 
-Editing in `/admin` requires TinaCloud credentials (see below). The site itself renders without them.
+Local editing runs in Tina's **local mode**: no credentials are needed, and saving writes straight to `content/pages/*.json`.
+
+Offline production build check:
+
+```bash
+npx tinacms build --local --skip-cloud-checks -c "astro build"
+```
 
 ---
 
-## Deployment (Cloudflare Pages)
+## Deployment (Cloudflare Workers)
 
-Cloudflare Pages is connected to this repo and builds on every push to `main`:
+The Worker `powercapital-cms` is connected to this repo through Workers Builds:
 
+- **Production branch:** `main` → `https://powercapital-cms.jr-1791.workers.dev`
+- **Every other branch** gets its own **Preview**, listed in the Worker's *Previews* section
 - **Build command:** `npm run build`
-- **Output directory:** `dist`
-- **Environment variables** (set in the Cloudflare Pages project, Production + Preview):
-  - `NEXT_PUBLIC_TINA_CLIENT_ID` — from the TinaCloud project
-  - `TINA_TOKEN` — a TinaCloud read-only token
+- **Deploy command:** `npx wrangler deploy` · **Preview command:** `npx wrangler preview`
+- **Build variables and secrets** (*Settings → Build*, set for **both Production and Preview**):
+  - `NEXT_PUBLIC_TINA_CLIENT_ID`: the TinaCloud client ID
+  - `TINA_TOKEN`: a TinaCloud content token with branch access `*`
 
-Every branch/PR gets its own preview URL; `main` publishes to the custom domain.
+These are needed while the site is **building**, so they go in the Build settings, not the runtime *Variables & Secrets*.
 
 ---
 
 ## Content management (TinaCloud)
 
-- The TinaCloud project is connected to this repo and tracks `main`.
-- Editors visit `/admin` on the live site, sign in, and edit visually.
-- Saving in Tina commits the changed JSON back to this repo, which triggers a Cloudflare
-  rebuild — so edits go live automatically.
+- TinaCloud project "Power Capital Site" is connected to this repo. After pushing a new branch, click **Refresh Branches**.
+- Every address the editor is used on must be listed under **Site URLs** in TinaCloud: production, each branch preview, `localhost`, and later the real domain.
+- Editors open `/admin/index.html#/~/` on the site, sign in, and edit. **Saving** commits the changed JSON to that branch, which triggers a rebuild.
 
-Credentials are never committed; they live only as environment variables (see `.env.example`).
+Credentials are never committed. They live only in Cloudflare build settings (see `.env.example` for the names).
 
 ---
 
 ## Notes
 
-- **Secrets:** never commit a `.env` file or the Tina token. Use env vars only.
-- **The contact form** posts to Web3Forms (static-friendly, no backend) with hCaptcha spam
-  protection; analytics run through Google Analytics (GA4).
-- **Custom domain:** `public/CNAME` holds `powercapital.cloud` for a future cutover. This
-  repo is currently in the build/preview phase (served at a `*.pages.dev` URL) and will
-  replace the existing GitHub Pages repo as the site serving `powercapital.cloud` once the
-  DNS is pointed at Cloudflare Pages.
+- **Secrets:** never commit a `.env` file or a Tina token.
+- **Contact form:** posts to Web3Forms with hCaptcha spam protection. Analytics run through Google Analytics (GA4).
+- **Custom domain:** `public/CNAME` holds `powercapital.cloud` for the future cutover. At cutover, `powercapital.cloud` is added as a Custom Domain on the Worker and DNS is pointed there (see PROJECT-NOTES.md §7).
 
 ---
 
