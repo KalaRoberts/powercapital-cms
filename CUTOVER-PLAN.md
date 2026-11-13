@@ -6,15 +6,25 @@
 
 ---
 
-## Phase 0 — Prep fixes (branch `cutover-prep`)
+## Phase 0 — Prep fixes (branch `cutover-prep`) ✅ merged 2026-11-13
 
 Already written, waiting to be committed:
-- [ ] **`public/sitemap.xml`** now lists the new addresses (`/about`, not `/about.html`).
-- [ ] **`public/_redirects`** sends old `.html` addresses (Google results, shared LinkedIn links, bookmarks) to the new pages with permanent (301) redirects.
+- [x] **`public/sitemap.xml`** now lists the new addresses (`/about`, not `/about.html`).
+- [x] **`public/_redirects`** sends old `.html` addresses (Google results, shared LinkedIn links, bookmarks) to the new pages with permanent (301) redirects.
 
 Test after the branch preview builds:
 - [ ] `<preview>/about.html` lands on `<preview>/about`, and the same for each of the 6 pages.
 - [ ] `<preview>/sitemap.xml` shows the new addresses.
+
+---
+
+## Phase 0.5 — Google Analytics custom dimensions (branch `ga-dimensions`)
+
+Kala owns the GA4 property `G-ZZ170WEYFW`. Finish this before the switch, so the new site's reports are complete from launch day.
+- [ ] Code: `page_type` on every hit; events `contact_cta_click` (`cta_location`, `cta_text`), `linkedin_click` (`link_location`, `cta_text`) and `generate_lead` (`form_service`). Nothing is tracked inside the editor, and no personal details are sent.
+- [ ] GA4 Admin → Custom definitions: 5 event-scoped dimensions (Page type, CTA location, CTA text, Link location, Form service).
+- [ ] Test in DebugView or Realtime on the preview; mark `generate_lead` as a key event.
+- [ ] Optional: keep preview/workers.dev traffic out of reports.
 
 ---
 
@@ -52,6 +62,8 @@ Check each page side by side with the live `powercapital.cloud`.
 - [ ] `/robots.txt` and `/sitemap.xml` load
 
 ### Editor
+- [ ] Menu Label on each page: rename one, save, and the menu and footer update within about 5 minutes; the breadcrumb follows; the url is unchanged
+- [ ] Media Manager opens and shows images (media sync is on)
 - [ ] `/admin/index.html#/~/<page>` works for all 6 pages: click text, type, the page updates, Save works
 - [ ] Footer tagline editable from any page
 - [ ] A save on `main` triggers a rebuild, and the change appears on the site in about 2–3 minutes
@@ -76,6 +88,7 @@ Check each page side by side with the live `powercapital.cloud`.
    - Path to Tina folder: **blank**
    - Site URLs: `http://localhost:4321`, `https://powercapital-cms.jr-1791.workers.dev`, and at cutover `https://powercapital.cloud` and `https://www.powercapital.cloud`. A glob such as `https://*-powercapital-cms.jr-1791.workers.dev` should cover branch previews, since TinaCloud supports glob patterns in Site URLs.
    - Tokens → create a **content token** with branch access `*`
+   - Media → **Sync Media**, if the editor's image picker says "Media needs to be turned on"
 5. **Client sends Kala** the new **Client ID** (public) and **content token** (private; share it securely, not by email).
 6. **Kala updates Cloudflare:** Worker → Settings → Build → Build variables and secrets. Replace `NEXT_PUBLIC_TINA_CLIENT_ID` and `TINA_TOKEN` for **Production and Previews Base**. Rebuild `main`.
 7. **Optional:** the client adds Kala as a collaborator on *their* project (using their 2nd seat), so Kala can still help in the editor.

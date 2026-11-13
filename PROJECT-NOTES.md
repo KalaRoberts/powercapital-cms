@@ -49,8 +49,11 @@ After handover, anything in Cloudflare (DNS, custom domains, Worker build settin
 - ✅ **Industries page ported** (`port-industries` branch, merged). It has 3 industry cards and 4 "Is it time?" sign cards with a closing note. Wording is kept as-is ("build-heavy", "covenant-heavy", "capital-intensive"). The intro reads "data centers construction and real estate", which is missing commas; it's left as-is and can be fixed in the editor.
 - ✅ **Footer tagline is editable site-wide** (Site Settings → Footer tagline, stored in `content/settings/site.json`). Change it once and it updates on every page; it updates live as you type.
 - ✅ **Contact page ported** (`port-contact` branch, merged). It has the Web3Forms form plus the direct-contact panel. Text, dropdown options, button label, success message and the message-box hint text are editable. The access key, spam protection and field names are fixed in code.
-- ⬜ **Full-site check** on `https://powercapital-cms.jr-1791.workers.dev`: every page, the nav, footer, mobile view, SEO tags and the contact form (including hCaptcha on that address). (it has the Web3Forms form). Take the real text from the old `powercapital` repo, now at `C:\dev\Powercapital`.
-- ⬜ Check the whole site on Workers, then do the cutover (§7).
+- ✅ **Cutover prep** (`cutover-prep`, merged): `public/sitemap.xml` uses the new addresses, and `public/_redirects` sends the 6 old `.html` addresses to the new pages (301). The build log shows "Parsed 6 valid redirect rules". Plan: **`CUTOVER-PLAN.md`**.
+- ✅ **Media library on** in TinaCloud (Media → Sync Media). Picking or swapping an image in the editor was tested and works.
+- ✅ **Editable menu names + automatic breadcrumbs** (`editable-nav`, merged; see "Menu labels" in §4). Tested on main: save → auto-deploy → the menu updates within a few minutes.
+- ⬜ **Google Analytics custom dimensions** (`ga-dimensions` branch, next). The GA4 property is Kala's.
+- ⬜ **Full-site check** (CUTOVER-PLAN.md Phase 1), then client TinaCloud setup (Phase 2), the switch (Phases 3–5) and Cloudflare handover (Phase 6).
 
 ## 3. Versions (what's installed and working)
 
@@ -75,7 +78,8 @@ tina/config.ts          schema: "settings" collection (content/settings/site.jso
 tina/tina-lock.json     MUST be committed whenever it changes (schema edits, Tina upgrades)
 content/pages/*.json    page content (SEO fields + ordered blocks): home.json, about.json, credentials.json, services.json, industries.json, contact.json
 content/settings/site.json   site-wide settings: footerTagline
-src/lib/tina/data.ts    getPage(slug) and getSettings() -> requestWithMetadata(client.queries...)
+src/lib/nav.ts          menu: fixed addresses + default names, labelFor()/navItems() (blank label -> default)
+src/lib/tina/data.ts    getPage(slug), getSettings() -> requestWithMetadata(...); getMenuLabels() reads every page's menuLabel
 src/lib/tina/islands.ts editable-region registry: "page" -> PageBlocks, "footer" -> FooterContent
 src/pages/tina-island/[name].ts   editor-only on-demand route (prerender = false)
 src/pages/index.astro   Home: loads the page via Tina, wraps <PageBlocks> in <TinaIsland ... primary>
@@ -84,13 +88,17 @@ src/pages/credentials.astro   Credentials: same pattern, slug "credentials"
 src/pages/services.astro      Services: same pattern, slug "services"
 src/pages/industries.astro    Industries: same pattern, slug "industries"
 src/pages/contact.astro       Contact: same pattern, slug "contact"; also loads the Web3Forms client script (renders hCaptcha)
-src/components/Footer.astro         loads Site Settings, wraps FooterContent in <TinaIsland name="footer"> (not primary)
-src/components/FooterContent.astro  footer markup; tagline tagged with data-tina-field
+src/components/Header.astro         loads menu labels, renders HeaderContent (NOT an editable island, so links navigate in the editor)
+src/components/HeaderContent.astro  header markup + menu
+src/components/Footer.astro         loads Site Settings + menu labels, wraps FooterContent in <TinaIsland name="footer"> (not primary)
+src/components/FooterContent.astro  footer markup; tagline tagged with data-tina-field; Explore links use menu labels
+src/components/blocks/PageHero.astro  breadcrumb is automatic: "<Home label> / <this page's label>" (passed in as `crumb` by PageBlocks)
 src/components/PageBlocks.astro   maps each block to a component (accepts _template or __typename)
 src/components/blocks/*.astro     section components; each text element has data-tina-field
 src/lib/inline.ts       inline(): **bold** in text fields -> <strong>; localImg(): fixes TinaCloud image paths
 scripts/copy-bridge.mjs dev-only: copies Tina's bridge.js into public/admin (see §6)
-public/assets/js/main.js site JS (nav, scroll reveal, contact form)
+public/assets/js/main.js site JS (mobile menu via click delegation, scroll reveal, contact form)
+public/_redirects       old .html addresses -> new pages (301)
 ```
 
 ### Section types (block templates) available
@@ -103,7 +111,7 @@ public/assets/js/main.js site JS (nav, scroll reveal, contact form)
 | `process` | Process | Home | numbered steps + button |
 | `ctaBand` | CtaBand | Home, About, Credentials, Services, Industries | closing call to action |
 | `contactSection` | ContactSection | Contact | Web3Forms form + details panel. Editable: form heading/intro, service dropdown options (list of {text}), message hint text, button label, success message, details heading/intro, detail rows {icon, label, value}, LinkedIn label/link, profile photo/name/role. Fixed in code: access key, honeypot, hCaptcha, field names, email subject, required-field check |
-| `pageHero` | PageHero | About, Credentials, Services, Industries, Contact | interior-page title banner with breadcrumb |
+| `pageHero` | PageHero | About, Credentials, Services, Industries, Contact | interior-page title banner. Breadcrumb is automatic from Menu Labels (no breadcrumb field) |
 | `bio` | Bio | About | photo + paragraphs + checklist + button |
 | `timeline` | Timeline | About | career timeline (first item = green dot) |
 | `featureCards` | FeatureCards | About, Credentials, Services, Industries | icon cards. Options: background `theme` (soft/mint/plain), `columns` (3 or 2), `cardStyle` ("card" default, or "industry" = gradient top stripe + hover lift), optional `lead`; each card has icon, title, optional grey `subtitle`, body (**bold** OK) |
@@ -124,6 +132,15 @@ Reuse these before creating new ones. Fields marked "use **bold**" accept `**tex
 
 ### Site-wide (global) content
 The footer tagline lives in the **settings** collection, not in a page. Add more site-wide text (footer links, contact email, etc.) as fields there. Render it in `FooterContent.astro` (or another component) with `tinaField(settings, "<field>")`. Pages mark their own `<TinaIsland ... primary>`, so the editor opens the page's sections first; the footer island is not primary.
+
+### Menu labels (page names in the menu)
+- Each page has a **Menu Label** field at the top of its editor panel, above SEO title (`menuLabel` in `content/pages/<slug>.json`). Home is editable too.
+- It's used by the header menu, the footer "Explore" links and the breadcrumbs. **Addresses never change** (`/about` stays `/about`); they're fixed in `src/lib/nav.ts`.
+- Max **14 characters**, so the menu doesn't wrap (`navLabelLimit` in `tina/config.ts`; keep it in sync with `NAV_MAX` in `nav.ts`). A blank label falls back to the default name.
+- The hint names each page's own url. It's a small custom input (`MenuLabelInput` in `tina/config.ts`) that reads the page's file name.
+- **Live vs after save:** the breadcrumb on the open page updates as you type. The header and footer update only **after Save + rebuild** (up to ~5 min); the hint says so. This is on purpose: making the header an editable island made every menu link open the edit panel instead of navigating.
+- Renaming a page does **not** change its SEO title or Social share title. Update those separately if wanted.
+- Adding a page to the menu: add it to `NAV` in `src/lib/nav.ts`.
 
 ### Adding a new page (pattern)
 1. Add any new block templates to `tina/config.ts` and register them in `PageBlocks.astro`.
@@ -171,10 +188,16 @@ Saving in the local editor writes to `content/pages/*.json` on disk.
 | `npm audit` lists many vulnerabilities | They're in build tools only, and the visitor site is static. **Don't run `npm audit fix --force`** — it breaks the build. |
 | Git opens a black screen (Vim) | Press Esc, type `:wq`, Enter. Git is now set to `code --wait` (VS Code). Use `--no-edit` on merges to skip the message. |
 | "npm is not recognized" in a new window | Open PowerShell 7 as Administrator and run `nvm use 22`. |
+| Build succeeds but deploy fails: `wrangler deploy` … `[code: 10013]` unknown error | Temporary Cloudflare API error. Retry the build (Deployments → View build history → Retry), or push `git commit --allow-empty -m "Retry deploy"`. |
+| Saved in the editor but no new deployment shows | Refresh the Cloudflare page; failed builds are under View build history. Check GitHub for the TinaCloud commit. After a schema change, Refresh Branches / Reindex in TinaCloud. |
+| Media Manager: "Media needs to be turned on" | TinaCloud → project → Media → Sync Media. Needed again on the client's new project. |
+| Clicking a menu link in the editor opens an edit panel | An element with `data-tina-field` is click-to-edit, not a link. Keep editable fields off navigation links. |
+| `Get-Process: Cannot find a process with the name "node"` | No dev server was running; harmless. Use `-ErrorAction SilentlyContinue`. |
+| Build warning `INEFFECTIVE_DYNAMIC_IMPORT` for `src/lib/nav.ts` | Harmless. |
 
-## 7. Cutover (later — not yet)
+## 7. Cutover
 
-Only after all 6 pages are ported and checked on Workers:
+**Full step-by-step plan: `CUTOVER-PLAN.md`** (Phases 0–6 plus rollback). Summary:
 1. Add `powercapital.cloud` (and `www`) as **Custom Domains** on the Worker.
 2. Update Cloudflare DNS: replace the 4 GitHub Pages `A` records and the `www` CNAME. Keep the old `powercapital` repo as a rollback.
 3. Add `https://powercapital.cloud` and `https://www.powercapital.cloud` to TinaCloud Site URLs.
@@ -182,7 +205,7 @@ Only after all 6 pages are ported and checked on Workers:
 
 ## 8. Housekeeping
 
-**Nothing outstanding** as of 2026-11-12. Done: old TinaCloud tokens deleted; `pages.dev` and merged-branch Site URLs removed; the Cloudflare Pages project removed; merged branches deleted (`live-editing`, `port-about`, `port-credentials`, `port-services`, `port-industries`, `port-contact`).
+**Nothing outstanding** as of 2026-11-12. Done: old TinaCloud tokens deleted; `pages.dev` and merged-branch Site URLs removed; the Cloudflare Pages project removed; merged branches deleted (`live-editing`, `port-about`, `port-credentials`, `port-services`, `port-industries`, `port-contact`, `cutover-prep`, `editable-nav`).
 
 TinaCloud **Site URLs** should contain only `http://localhost:4321` and `https://powercapital-cms.jr-1791.workers.dev`, plus the preview of whatever branch is in progress. At cutover, add `https://powercapital.cloud` and `https://www.powercapital.cloud`.
 

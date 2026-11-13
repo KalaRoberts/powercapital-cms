@@ -3,7 +3,7 @@
 The website for **Power Capital**, the fractional-CFO practice of John Roberts. It's built with **Astro**, with a **TinaCMS / TinaCloud** content layer, so non-technical editors can update the site in a visual editor. They click text on the page, type, and see the change straight away. No code is needed.
 
 **Live site (current):** https://powercapital.cloud is still served by the original static-HTML repo. This repo is in the build/preview phase and takes over the domain at cutover.
-**Pages ported:** all six — Home, About, Credentials, Services, Industries, Contact. Next: full-site check, then cutover.
+**Pages ported:** all six — Home, About, Credentials, Services, Industries, Contact. Menu names and breadcrumbs are editable. Next: Google Analytics custom dimensions, full-site check, then cutover (see **[CUTOVER-PLAN.md](CUTOVER-PLAN.md)**).
 **Stack:** Astro 7 (prerendered pages) · TinaCMS 3 + TinaCloud · `@tinacms/astro` live visual editing · Cloudflare Workers · vanilla CSS/JS
 
 > Maintainers: see **[PROJECT-NOTES.md](PROJECT-NOTES.md)** for versions, the full workflow, known issues and fixes, and the cutover checklist.
@@ -38,6 +38,7 @@ Sections are a **reorderable list that items can be added to or removed from**, 
 - Click any headline, paragraph, card, stat, or button and edit it, with the page updating as they type
 - Swap images
 - Edit the **footer tagline** once (Site Settings) and have it change on every page
+- Rename a page in the menu with its **Menu Label** field (max 14 characters). The breadcrumb follows automatically; the url doesn't change. The menu updates after Save, taking up to about 5 minutes.
 - **Reorder**, **add**, or **remove** sections, and add or remove items in lists (stats, cards, steps)
 
 The underlying setup (SEO tags, Google Analytics, favicons, fonts, the contact-form integration) lives in code (`src/layouts/BaseLayout.astro`). It is deliberately **not** editable in the CMS, so the layout and integrations can't be broken from there.
@@ -66,8 +67,9 @@ powercapital-cms/
 │   ├── lib/tina/data.ts            # Tina data loaders (requestWithMetadata)
 │   ├── lib/tina/islands.ts         # editable-region registry
 │   ├── lib/inline.ts               # **bold** support + TinaCloud image-path fix
+│   ├── lib/nav.ts                  # menu addresses + default names
 │   ├── components/
-│   │   ├── Header.astro · Footer.astro · FooterContent.astro
+│   │   ├── Header.astro · HeaderContent.astro · Footer.astro · FooterContent.astro
 │   │   ├── PageBlocks.astro        # renders a page's blocks
 │   │   └── blocks/                 # one component per section type (Hero, PainPoints, PageHero, Bio, Timeline, Recommendations, NumberedList, Plans, ContactSection, …)
 │   ├── pages/
