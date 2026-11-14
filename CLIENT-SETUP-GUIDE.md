@@ -52,7 +52,7 @@ You'll create two free accounts:
 5. Click **Save** or **Create project**.
 6. Open the **Media** tab and click **Sync Media**. This lets the editor show the site's images.
 7. Open the **Tokens** tab and click **New token**:
-   - **Type:** Content (read-only)
+   - **Type:** `Content` (read-only)
    - **Name:** `Website build`
    - **Git branches:** `*` (just an asterisk)
    - Click **Create**.
@@ -68,7 +68,7 @@ Share your token IDs with us so that we can connect the site to your Tina accoun
 
 **Please don't send the token by regular email or text.** Instead read it to us on a call so we can enter it directly.
 
-## Step 5: (Optional) Add Kala to your project
+## Step 5: (Optional) Add us to your project
 
 TinaCloud accounts stay free if they have 2 users or fewer. You are one of those users. If you add us, we will take the last free seat. If you need someone else to have that seat, talk to us about how to coordinate without adding us on your account.
 
