@@ -48,10 +48,12 @@ const PAGE_TYPE = active || "other";
     <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
     <script is:inline define:vars={{ GA_ID, PAGE_TYPE }}>
       window.dataLayer = window.dataLayer || [];
-      function gtag() { dataLayer.push(arguments); }
-      gtag("js", new Date());
+      // define:vars wraps this script in a function, so a plain "function gtag"
+      // would be local. Put it on window so main.js can send custom events.
+      window.gtag = function gtag() { window.dataLayer.push(arguments); };
+      window.gtag("js", new Date());
       // page_type -> GA4 custom dimension "Page type" (event scope)
-      gtag("config", GA_ID, { page_type: PAGE_TYPE });
+      window.gtag("config", GA_ID, { page_type: PAGE_TYPE });
     </script>
     <!-- End Google Analytics -->
 
