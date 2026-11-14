@@ -4,6 +4,8 @@
 > earlier HANDOFF.md. **No secrets in this file.** Tokens live only in TinaCloud
 > and in Cloudflare build settings.
 
+> ✅ **Handover complete (2026-11-14).** `powercapital.cloud` is live on Cloudflare Workers. Editing runs through John's TinaCloud project. Kala stays on as a Cloudflare admin for ongoing maintenance.
+
 ## 1. What this is
 
 The new site for **Power Capital** (John Roberts, fractional CFO, Raleigh NC),
@@ -11,26 +13,28 @@ built with **Astro + TinaCMS**. It replaces the hand-written 6-page HTML site.
 
 | | |
 |---|---|
-| Live domain | `powercapital.cloud` — **still served by the old `powercapital` repo on GitHub Pages.** Do not change DNS until all 6 pages are ported and checked. |
+| Live domain | **`https://powercapital.cloud`** (and `www`), served by the Cloudflare Worker `powercapital-cms` as Custom Domains since 2026-11-14 |
 | This repo | `github.com/KalaRoberts/powercapital-cms` |
-| Old site (rollback + source of real page text) | `github.com/KalaRoberts/powercapital` |
+| Old site (retired; kept as rollback + source of original page text) | `github.com/KalaRoberts/powercapital` (GitHub Pages no longer receives traffic) |
 | Hosting | **Cloudflare Workers** (Worker name `powercapital-cms`) |
-| Production (`main`) | `https://powercapital-cms.jr-1791.workers.dev` (Home at `/`, then `/about`, `/credentials`, …) |
+| Production (`main`) | `https://powercapital.cloud`, also at `https://powercapital-cms.jr-1791.workers.dev` (Home at `/`, then `/about`, `/credentials`, …) |
 | Branch previews | `https://<branch>-powercapital-cms.jr-1791.workers.dev`, listed under the Worker's **Previews** section. Each one shows the **whole site as of that branch** (Home at `/`, the ported page at `/<slug>`). |
-| TinaCloud project | "Power Capital Site", client ID `aa8e00fd-4923-40cc-abc5-791d41d0f1d7` (public) |
+| TinaCloud project | **John's** "Power Capital Site", client ID `0a2ead54-1e42-49c6-be31-bd39ee5b0cec` (public). Editor: `https://powercapital.cloud/admin` |
+| Fallback TinaCloud project | Kala's old "Power Capital Site", client ID `aa8e00fd-4923-40cc-abc5-791d41d0f1d7`. Kept on purpose, not connected (see §7) |
 | GA4 | `G-ZZ170WEYFW` (in `BaseLayout.astro`) |
 
 ### Who owns what
 
 | Thing | Owner | Kala's access |
 |---|---|---|
-| Domain `powercapital.cloud` + its DNS | **Client** (their Cloudflare account) | Admin **only during setup**; removed at handover |
-| Cloudflare Worker `powercapital-cms` (`jr-1791.workers.dev`) | **Client** (same Cloudflare account) | Admin during setup; removed at handover |
-| GitHub repo `KalaRoberts/powercapital-cms` | **Kala** | Owner; client gets Write access |
+| Domain `powercapital.cloud` + its DNS | **Client** (their Cloudflare account) | **Admin** (kept on for maintenance) |
+| Cloudflare Worker `powercapital-cms` (`jr-1791.workers.dev`) | **Client** (same Cloudflare account) | **Admin**: build logs, build settings and secrets, retries, rollback |
+| GitHub repo `KalaRoberts/powercapital-cms` | **Kala** | Owner; John (`jr1791`) has Write access |
 | Old GitHub Pages repo `KalaRoberts/powercapital` (rollback) | **Kala** | Owner |
-| TinaCloud project | **Client** (after Phase 2 of CUTOVER-PLAN.md) | Optional collaborator seat on the client's project |
+| TinaCloud project (`0a2ead54-1e42-49c6-be31-bd39ee5b0cec`) | **John** (his own TinaCloud account) | Project collaborator, **Admin** (uses John's 2nd free seat) |
+| GA4 property `G-ZZ170WEYFW` | **Client** (John) | As granted by John |
 
-After handover, anything in Cloudflare (DNS, custom domains, Worker build settings and secrets, build logs, retries, rollback) is done by the **client**, or by Kala only if the client re-invites her.
+Kala and the client can both do anything in Cloudflare (DNS, custom domains, Worker build settings and secrets, build logs, retries, rollback). Leave email DNS records (MX, TXT) alone.
 
 ### Decisions
 - **Framework:** Astro. Pages are prerendered (static).
@@ -52,8 +56,11 @@ After handover, anything in Cloudflare (DNS, custom domains, Worker build settin
 - ✅ **Cutover prep** (`cutover-prep`, merged): `public/sitemap.xml` uses the new addresses, and `public/_redirects` sends the 6 old `.html` addresses to the new pages (301). The build log shows "Parsed 6 valid redirect rules". Plan: **`CUTOVER-PLAN.md`**.
 - ✅ **Media library on** in TinaCloud (Media → Sync Media). Picking or swapping an image in the editor was tested and works.
 - ✅ **Editable menu names + automatic breadcrumbs** (`editable-nav`, merged; see "Menu labels" in §4). Tested on main: save → auto-deploy → the menu updates within a few minutes.
-- ⬜ **Google Analytics custom dimensions** (`ga-dimensions` branch, next). The GA4 property is Kala's.
-- ⬜ **Full-site check** (CUTOVER-PLAN.md Phase 1), then client TinaCloud setup (Phase 2), the switch (Phases 3–5) and Cloudflare handover (Phase 6).
+- ✅ **Google Analytics custom dimensions** (`ga-dimensions`, merged): `page_type`, `contact_cta_click`, `linkedin_click`, `generate_lead` (+ 5 event-scoped dimensions in GA4). The GA4 property is John's.
+- ✅ **Full-site check** (CUTOVER-PLAN.md Phase 1).
+- ✅ **Client TinaCloud project** (Phase 2): John's project, client ID `0a2ead54-1e42-49c6-be31-bd39ee5b0cec`, is in the Cloudflare build variables (Production + Previews). Kala is an Admin collaborator.
+- ✅ **Cutover** (Phases 3–5, 2026-11-14): GitHub Pages DNS records replaced with Worker Custom Domains for `powercapital.cloud` and `www`. Checked: HTTPS, `.html` redirects, contact form, editor (Kala and John).
+- ✅ **Cloudflare handover** (Phase 6): the client owns the Cloudflare account. Kala stays on as an admin for maintenance.
 
 ## 3. Versions (what's installed and working)
 
@@ -195,26 +202,32 @@ Saving in the local editor writes to `content/pages/*.json` on disk.
 | `Get-Process: Cannot find a process with the name "node"` | No dev server was running; harmless. Use `-ErrorAction SilentlyContinue`. |
 | Build warning `INEFFECTIVE_DYNAMIC_IMPORT` for `src/lib/nav.ts` | Harmless. |
 
-## 7. Cutover
+## 7. Cutover — ✅ done 2026-11-14
 
-**Full step-by-step plan: `CUTOVER-PLAN.md`** (Phases 0–6 plus rollback). Summary:
-1. Add `powercapital.cloud` (and `www`) as **Custom Domains** on the Worker.
-2. Update Cloudflare DNS: replace the 4 GitHub Pages `A` records and the `www` CNAME. Keep the old `powercapital` repo as a rollback.
-3. Add `https://powercapital.cloud` and `https://www.powercapital.cloud` to TinaCloud Site URLs.
-4. Submit `sitemap.xml` in Google Search Console (optional).
+See `CUTOVER-PLAN.md` for the full record (Phases 0–6 plus rollback). What was done:
+1. Replaced the 4 GitHub Pages `A` records and the `www` CNAME with **Custom Domains** on the Worker (`powercapital.cloud`, `www.powercapital.cloud`).
+2. Switched the Cloudflare build variables `NEXT_PUBLIC_TINA_CLIENT_ID` / `TINA_TOKEN` (Production + Previews) to John's TinaCloud project.
+3. Handed the Cloudflare account to the client. Kala stays on as an admin.
+
+**Fallbacks kept on purpose (don't delete):**
+- **Old site:** repo `KalaRoberts/powercapital` with its GitHub Pages setting still on. Rollback (in Cloudflare; Kala or the client): remove the Worker custom domains, then re-add the 4 `A` records (`185.199.108–111.153`) and the `www` CNAME → `kalaroberts.github.io`, all **DNS only**.
+- **Old TinaCloud project:** Kala's "Power Capital Site" (`aa8e00fd-…`) still exists. To switch editing back: put its client ID and token in the Worker build variables and rebuild.
+- `public/CNAME` is left over from GitHub Pages. Harmless on Workers.
+
+**Still open after cutover (not needed for the site to work):** check that Search Console has `sitemap.xml`, that LinkedIn Post Inspector shows the new preview, and that `generate_lead` is marked as a GA4 key event once it appears.
 
 ## 8. Housekeeping
 
-**Nothing outstanding** as of 2026-11-12. Done: old TinaCloud tokens deleted; `pages.dev` and merged-branch Site URLs removed; the Cloudflare Pages project removed; merged branches deleted (`live-editing`, `port-about`, `port-credentials`, `port-services`, `port-industries`, `port-contact`, `cutover-prep`, `editable-nav`).
+**Nothing outstanding** as of 2026-11-14 (handover complete). Done: old TinaCloud tokens deleted; `pages.dev` and merged-branch Site URLs removed; the Cloudflare Pages project removed; merged branches deleted (`live-editing`, `port-about`, `port-credentials`, `port-services`, `port-industries`, `port-contact`, `cutover-prep`, `editable-nav`).
 
-TinaCloud **Site URLs** should contain only `http://localhost:4321` and `https://powercapital-cms.jr-1791.workers.dev`, plus the preview of whatever branch is in progress. At cutover, add `https://powercapital.cloud` and `https://www.powercapital.cloud`.
+TinaCloud **Site URLs** (John's project): `https://powercapital.cloud`, `https://www.powercapital.cloud`, `https://powercapital-cms.jr-1791.workers.dev`, `https://*-powercapital-cms.jr-1791.workers.dev` (covers every branch preview) and `http://localhost:4321`. With the wildcard, new branches don't need their own entry.
 
 After merging each future branch:
 ```powershell
 git branch -d <branch>
 git push origin --delete <branch>
 ```
-Then remove its preview address from TinaCloud → Site URLs. Deleted branches may linger in TinaCloud's Branches list until the next Refresh Branches; that's harmless.
+No Site URL cleanup is needed (the wildcard covers previews). Deleted branches may linger in TinaCloud's Branches list until the next Refresh Branches; that's harmless.
 
 ## 9. Content reference (for porting)
 

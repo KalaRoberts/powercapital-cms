@@ -2,8 +2,8 @@
 
 The website for **Power Capital**, the fractional-CFO practice of John Roberts. It's built with **Astro**, with a **TinaCMS / TinaCloud** content layer, so non-technical editors can update the site in a visual editor. They click text on the page, type, and see the change straight away. No code is needed.
 
-**Live site (current):** https://powercapital.cloud is still served by the original static-HTML repo. This repo is in the build/preview phase and takes over the domain at cutover.
-**Pages ported:** all six — Home, About, Credentials, Services, Industries, Contact. Menu names and breadcrumbs are editable. Next: Google Analytics custom dimensions, full-site check, then cutover (see **[CUTOVER-PLAN.md](CUTOVER-PLAN.md)**).
+**Live site:** https://powercapital.cloud is served from this repo on Cloudflare Workers (since 2026-11-14). The editor is at **https://powercapital.cloud/admin**. Handover to the client is complete.
+**Pages ported:** all six — Home, About, Credentials, Services, Industries, Contact. Menu names and breadcrumbs are editable. GA4 custom events are live. Cutover and handover are done; see **[CUTOVER-PLAN.md](CUTOVER-PLAN.md)** for the record.
 **Stack:** Astro 7 (prerendered pages) · TinaCMS 3 + TinaCloud · `@tinacms/astro` live visual editing · Cloudflare Workers · vanilla CSS/JS
 
 > Maintainers: see **[PROJECT-NOTES.md](PROJECT-NOTES.md)** for versions, the full workflow, known issues and fixes, and the cutover checklist.
@@ -115,7 +115,7 @@ npx tinacms build --local --skip-cloud-checks -c "astro build"
 
 The Worker `powercapital-cms` is connected to this repo through Workers Builds:
 
-- **Production branch:** `main` → `https://powercapital-cms.jr-1791.workers.dev` (Home at `/`, pages at `/about`, `/credentials`, `/services`, `/industries`, `/contact`)
+- **Production branch:** `main` → **`https://powercapital.cloud`** (+ `www`, as Worker Custom Domains), also at `https://powercapital-cms.jr-1791.workers.dev` (Home at `/`, pages at `/about`, `/credentials`, `/services`, `/industries`, `/contact`)
 - **Every other branch** gets its own **Preview** at `https://<branch>-powercapital-cms.jr-1791.workers.dev`, listed in the Worker's *Previews* section. It shows the whole site as of that branch.
 - **Build command:** `npm run build`
 - **Deploy command:** `npx wrangler deploy` · **Preview command:** `npx wrangler preview`
@@ -131,9 +131,9 @@ These are needed while the site is **building**, so they go in the Build setting
 
 ## Content management (TinaCloud)
 
-- TinaCloud project "Power Capital Site" is connected to this repo. After pushing a new branch, click **Refresh Branches**.
-- Every address the editor is used on must be listed under **Site URLs** in TinaCloud: production, each branch preview, `localhost`, and later the real domain.
-- Editors open `/admin/index.html#/~/` on the site, sign in, and edit. **Saving** commits the changed JSON to that branch, which triggers a rebuild.
+- The TinaCloud project **belongs to the client** (John's account), client ID `0a2ead54-1e42-49c6-be31-bd39ee5b0cec`. Kala is an Admin collaborator. After pushing a new branch, click **Refresh Branches** in that project.
+- **Site URLs** in TinaCloud: `powercapital.cloud`, `www.powercapital.cloud`, the `workers.dev` address, the wildcard `https://*-powercapital-cms.jr-1791.workers.dev` for all branch previews, and `localhost`.
+- Editors open **https://powercapital.cloud/admin**, sign in, and edit. **Saving** commits the changed JSON to that branch, which triggers a rebuild.
 
 Credentials are never committed. They live only in Cloudflare build settings (see `.env.example` for the names).
 
@@ -143,7 +143,8 @@ Credentials are never committed. They live only in Cloudflare build settings (se
 
 - **Secrets:** never commit a `.env` file or a Tina token.
 - **Contact form:** posts to Web3Forms with hCaptcha spam protection. Its text and dropdown options are editable in Tina; the key and spam settings stay in code. Analytics run through Google Analytics (GA4).
-- **Custom domain:** `public/CNAME` holds `powercapital.cloud` for the future cutover. At cutover, `powercapital.cloud` is added as a Custom Domain on the Worker and DNS is pointed there (see PROJECT-NOTES.md §7).
+- **Custom domain:** `powercapital.cloud` and `www` are Custom Domains on the Worker (cutover 2026-11-14). The old GitHub Pages repo is kept as a rollback; see PROJECT-NOTES.md §7. `public/CNAME` is a harmless leftover.
+- **Ownership:** the client owns the domain, the Cloudflare account, the TinaCloud project and the GA4 property. Kala owns this repo and is an admin on the Cloudflare account and the TinaCloud project.
 
 ---
 
