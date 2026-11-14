@@ -21,7 +21,7 @@ built with **Astro + TinaCMS**. It replaces the hand-written 6-page HTML site.
 | Branch previews | `https://<branch>-powercapital-cms.jr-1791.workers.dev`, listed under the Worker's **Previews** section. Each one shows the **whole site as of that branch** (Home at `/`, the ported page at `/<slug>`). |
 | TinaCloud project | **John's** "Power Capital Site", client ID `0a2ead54-1e42-49c6-be31-bd39ee5b0cec` (public). Editor: `https://powercapital.cloud/admin` |
 | Fallback TinaCloud project | Kala's old "Power Capital Site", client ID `aa8e00fd-4923-40cc-abc5-791d41d0f1d7`. Kept on purpose, not connected (see §7) |
-| GA4 | `G-ZZ170WEYFW` (in `BaseLayout.astro`) |
+| GA4 | `G-ZZ170WEYFW` (in `BaseLayout.astro`). Custom events are sent from `public/assets/js/main.js` |
 
 ### Who owns what
 
@@ -34,7 +34,7 @@ built with **Astro + TinaCMS**. It replaces the hand-written 6-page HTML site.
 | TinaCloud project (`0a2ead54-1e42-49c6-be31-bd39ee5b0cec`) | **John** (his own TinaCloud account) | Project collaborator, **Admin** (uses John's 2nd free seat) |
 | GA4 property `G-ZZ170WEYFW` | **Client** (John) | As granted by John |
 
-Kala and the client can both do anything in Cloudflare (DNS, custom domains, Worker build settings and secrets, build logs, retries, rollback). Leave email DNS records (MX, TXT) alone.
+Kala and the client can both do anything in Cloudflare (DNS, custom domains, Worker build settings and secrets, build logs, retries, rollback). Leave email DNS records (MX, TXT) and the `google-site-verification` TXT record alone.
 
 ### Decisions
 - **Framework:** Astro. Pages are prerendered (static).
@@ -56,10 +56,11 @@ Kala and the client can both do anything in Cloudflare (DNS, custom domains, Wor
 - ✅ **Cutover prep** (`cutover-prep`, merged): `public/sitemap.xml` uses the new addresses, and `public/_redirects` sends the 6 old `.html` addresses to the new pages (301). The build log shows "Parsed 6 valid redirect rules". Plan: **`CUTOVER-PLAN.md`**.
 - ✅ **Media library on** in TinaCloud (Media → Sync Media). Picking or swapping an image in the editor was tested and works.
 - ✅ **Editable menu names + automatic breadcrumbs** (`editable-nav`, merged; see "Menu labels" in §4). Tested on main: save → auto-deploy → the menu updates within a few minutes.
-- ✅ **Google Analytics custom dimensions** (`ga-dimensions`, merged): `page_type`, `contact_cta_click`, `linkedin_click`, `generate_lead` (+ 5 event-scoped dimensions in GA4). The GA4 property is John's.
+- ✅ **Google Analytics custom dimensions** (`ga-dimensions`, merged): `page_type`, `contact_cta_click`, `linkedin_click`, `generate_lead` (+ 5 event-scoped dimensions in GA4). **Tested on the live site 2026-11-14**: all four events and their details show in GA4 Realtime. The GA4 property is John's.
 - ✅ **Full-site check** (CUTOVER-PLAN.md Phase 1).
 - ✅ **Client TinaCloud project** (Phase 2): John's project, client ID `0a2ead54-1e42-49c6-be31-bd39ee5b0cec`, is in the Cloudflare build variables (Production + Previews). Kala is an Admin collaborator.
 - ✅ **Cutover** (Phases 3–5, 2026-11-14): GitHub Pages DNS records replaced with Worker Custom Domains for `powercapital.cloud` and `www`. Checked: HTTPS, `.html` redirects, contact form, editor (Kala and John).
+- ✅ **Search Console + LinkedIn** (2026-11-14): `powercapital.cloud` is a **Domain** property, verified through Google's Cloudflare shortcut (it added a `google-site-verification` TXT record; **don't delete it**). The sitemap is submitted, indexing of the home page was requested, and John was added as an Owner. LinkedIn Post Inspector was run on `https://powercapital.cloud`.
 - ✅ **Cloudflare handover** (Phase 6): the client owns the Cloudflare account. Kala stays on as an admin for maintenance.
 
 ## 3. Versions (what's installed and working)
@@ -201,6 +202,12 @@ Saving in the local editor writes to `content/pages/*.json` on disk.
 | Clicking a menu link in the editor opens an edit panel | An element with `data-tina-field` is click-to-edit, not a link. Keep editable fields off navigation links. |
 | `Get-Process: Cannot find a process with the name "node"` | No dev server was running; harmless. Use `-ErrorAction SilentlyContinue`. |
 | Build warning `INEFFECTIVE_DYNAMIC_IMPORT` for `src/lib/nav.ts` | Harmless. |
+| GA4 shows page views but no custom events; Console says `gtag is not defined` | Astro's `define:vars` wraps the GA script in a function, so `function gtag()` stayed local. Fixed by defining `window.gtag = …` in `BaseLayout.astro`. Keep it on `window`. |
+| GA4 Realtime shows an extra `click` event | GA4's automatic outbound-link tracking (e.g. LinkedIn). It appears next to `linkedin_click`. Expected. |
+| GA4 shows `generate_lead` but not the service chosen | Expected: the service is the `form_service` parameter. Click the event in Realtime, or use Explore with the "Form service" dimension. |
+| Search Console: "Invalid sitemap address" | It's a Domain property, so enter the **full** address, `https://powercapital.cloud/sitemap.xml`, not just `sitemap.xml`. |
+| DNS has a `google-site-verification=…` TXT record | It keeps Search Console verified. Leave it, like the email records. |
+| Testing GA4 | Use **Reports → Realtime** (about a minute). Normal reports and custom dimensions take 24–48 h. Ad blockers stop GA4. DebugView needs a debug flag; DevTools → Network, filter `collect`, also works. |
 
 ## 7. Cutover — ✅ done 2026-11-14
 
@@ -214,7 +221,7 @@ See `CUTOVER-PLAN.md` for the full record (Phases 0–6 plus rollback). What was
 - **Old TinaCloud project:** Kala's "Power Capital Site" (`aa8e00fd-…`) still exists. To switch editing back: put its client ID and token in the Worker build variables and rebuild.
 - `public/CNAME` is left over from GitHub Pages. Harmless on Workers.
 
-**Still open after cutover (not needed for the site to work):** check that Search Console has `sitemap.xml`, that LinkedIn Post Inspector shows the new preview, and that `generate_lead` is marked as a GA4 key event once it appears.
+**Nothing left open.** Search Console (sitemap and verification) and LinkedIn Post Inspector are done.
 
 ## 8. Housekeeping
 

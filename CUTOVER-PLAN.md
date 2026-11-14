@@ -4,7 +4,7 @@
 >
 > **Kept as fallbacks, not deleted:** the old GitHub Pages repo (`KalaRoberts/powercapital`, with Pages still on), Kala's old TinaCloud project (`aa8e00fd-…`), and `public/CNAME`.
 >
-> **Small follow-ups, if not already done:** mark `generate_lead` as a GA4 key event once it appears, and check the Search Console sitemap and the LinkedIn Post Inspector.
+> **GA4 tested 2026-11-14:** all custom events arrive in Realtime.
 
 > Goal: replace the old GitHub Pages site at **powercapital.cloud** with the new Astro + TinaCMS site on Cloudflare Workers, and hand editing over to the client.
 >
@@ -29,8 +29,7 @@ Test after the branch preview builds:
 The GA4 property `G-ZZ170WEYFW` belongs to the client (John). Finish this before the switch, so the new site's reports are complete from launch day.
 - [x] Code: `page_type` on every hit; events `contact_cta_click` (`cta_location`, `cta_text`), `linkedin_click` (`link_location`, `cta_text`) and `generate_lead` (`form_service`). Nothing is tracked inside the editor, and no personal details are sent.
 - [x] GA4 Admin → Custom definitions: 5 event-scoped dimensions (Page type, CTA location, CTA text, Link location, Form service).
-- [x] Testing moved to Phase 5 (on the live site): check events in DevTools (Network → filter `collect`: `en=` event, `ep.` details) or GA4 Realtime; then mark `generate_lead` as a key event.
-- [x] Optional: keep preview/workers.dev traffic out of reports.
+- [x] **Tested on the live site (2026-11-14)** in GA4 Realtime: `contact_cta_click`, `linkedin_click` and `generate_lead` (with `form_service`) all arrive. A fix was needed first: `gtag` wasn't global (`window.gtag` in `BaseLayout.astro`; see PROJECT-NOTES §6).
 
 ---
 
@@ -151,8 +150,8 @@ Steps:
 - [x] Contact form: send one real message from the live domain
 - [x] Editor: log in at `https://powercapital.cloud/admin/index.html#/~/` (client and Kala), edit and save
 - [x] GA4 Realtime shows visits on the live domain
-- [x] GA4 custom events: Contact buttons, LinkedIn, one test form (`generate_lead`); mark `generate_lead` as a key event (see Phase 0.5)
-- [x] Google Search Console: submit `https://powercapital.cloud/sitemap.xml` and request indexing of the home page
+- [x] GA4 custom events: Contact buttons, LinkedIn, one test form (`generate_lead`)
+- [x] Google Search Console: Domain property verified through Cloudflare (TXT record kept), `https://powercapital.cloud/sitemap.xml` submitted, home page indexing requested, John added as Owner
 - [x] LinkedIn Post Inspector: re-scrape `https://powercapital.cloud` so link previews refresh
 - [x] Update `PROJECT-NOTES.md`: live domain now served by the Worker; GitHub Pages retired
 

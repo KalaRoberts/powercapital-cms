@@ -142,9 +142,10 @@ Credentials are never committed. They live only in Cloudflare build settings (se
 ## Notes
 
 - **Secrets:** never commit a `.env` file or a Tina token.
-- **Contact form:** posts to Web3Forms with hCaptcha spam protection. Its text and dropdown options are editable in Tina; the key and spam settings stay in code. Analytics run through Google Analytics (GA4).
+- **Contact form:** posts to Web3Forms with hCaptcha spam protection. Its text and dropdown options are editable in Tina; the key and spam settings stay in code. Analytics run through Google Analytics (GA4, property owned by the client). `BaseLayout.astro` sets up `window.gtag` and sends `page_type`. `public/assets/js/main.js` sends `contact_cta_click`, `linkedin_click` and `generate_lead` (with `form_service`). Tested in Realtime 2026-11-14.
 - **Custom domain:** `powercapital.cloud` and `www` are Custom Domains on the Worker (cutover 2026-11-14). The old GitHub Pages repo is kept as a rollback; see PROJECT-NOTES.md §7. `public/CNAME` is a harmless leftover.
-- **Ownership:** the client owns the domain, the Cloudflare account, the TinaCloud project and the GA4 property. Kala owns this repo and is an admin on the Cloudflare account and the TinaCloud project.
+- **Search:** `powercapital.cloud` is verified in Google Search Console (Domain property; John is an Owner), with `sitemap.xml` submitted.
+- **Ownership:** the client owns the domain, the Cloudflare account, the TinaCloud project the GA4 property and the Search Console property. Kala owns this repo and is an admin on the Cloudflare account and the TinaCloud project.
 
 ---
 
