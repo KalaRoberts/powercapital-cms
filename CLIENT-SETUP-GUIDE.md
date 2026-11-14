@@ -26,23 +26,27 @@ You'll create two free accounts:
 3. Choose the repository **powercapital-cms**.
 4. Fill in the project settings:
    - **Project name:** `Power Capital Site` (can by whatever you'd like to call it)
-   - **Site URLs:** Add each of the below as its own Site URL entry (copy button for your convenience). This one-time setup gives you the rights to edit the site in production as well as any test environments in the future if needed.
+   - **Site URLs:** Add a URL entry for each of the below (5 separate entries). This one-time setup gives you the rights to edit the site in production as well as any test environments in the future if needed.
 
      ```
      http://localhost:4321
      ```
 
+
      ```
      https://powercapital-cms.jr-1791.workers.dev
      ```
+
 
      ```
      https://*-powercapital-cms.jr-1791.workers.dev
      ```
 
+
      ```
      https://powercapital.cloud
      ```
+
 
      ```
      https://www.powercapital.cloud
