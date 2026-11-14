@@ -14,8 +14,18 @@ This is the repository where the website's files are stored. This will remain fr
 1. We will invite you to the `powercapital-cms` repository.
 2. You'll get an email from GitHub. Click **View invitation**, then **Accept invitation**.
 
-## Step 3: Create a free TinaCloud account and project
-This enables the editing capability we've built for your site to be edited by non-tech users. Its free for up to 2 users on the account **(Do not add any others users yet - see step 5)**.
+## Step 3: Create a free TinaCloud account
+This enables the editing capability we've built for your site to be used by you. 
+1. Go to **https://app.tina.io** and choose **Sign in with GitHub**. Approve the permissions it asks for.
+   
+**Decision on next steps**:
+
+A TinaCloud account is free for up to 2 users on the account. You are one of those users.
+* **Option 1**: Add us to your account. We will take the last free seat and complete the below steps for you (and/or have the ability to consult in the future) - **Skip to Step 6**.
+* **Option 2**: If you prefer to complete these steps yourself and save that second seat - **Continue to Step 4**.
+
+## Step 4: Setup the project in TinaCloud
+You have chosen to **_complete the steps yourself without sharing the second seat_** with us. Please complete the below steps.
 
 1. Go to **https://app.tina.io** and choose **Sign in with GitHub**. Approve the permissions it asks for.
 2. Click to create a **new project** and connect it to a GitHub repository.
@@ -57,7 +67,7 @@ This enables the editing capability we've built for your site to be edited by no
    - **Git branches:** `*` (just an asterisk)
    - Click **Create**.
 
-## Step 4: Send us your token IDs 
+## Step 5: Send us your token IDs
 
 Share your token IDs with us so that we can connect the site to your Tina account for editing.
 
@@ -68,15 +78,13 @@ Share your token IDs with us so that we can connect the site to your Tina accoun
 
 **Please don't send the token by regular email or text.** Instead read it to us on a call so we can enter it directly.
 
-## Step 5: (Optional) Add us to your project
+## Step 6: 
+You've decided to **_share the second seat with us_** so we can do the setup for you. Please follow these steps.
+1. In your TinaCloud project, open **Collaborators** (or **User management**).
+2. Invite our account: **karoberts2014@gmail.com**.
+3. We will let you know when the site is connected and ready for you.
 
-TinaCloud accounts stay free if they have 2 users or fewer. You are one of those users. If you add us, we will take the last free seat. If you need someone else to have that seat, talk to us about how to coordinate without adding us on your account.
-
-If you want to give the second seat to us, follow these steps:
-- In your TinaCloud project, open **Collaborators** (or **User management**).
-- Invite Kala's email: **karoberts2014@gmail.com**.
-
-## Step 6: Try the editor (after we confirm the connection)
+## Step 7: Try the editor (after we confirm the connection)
 
 **Your everyday editing address is:**
 **https://powercapital.cloud/admin**
