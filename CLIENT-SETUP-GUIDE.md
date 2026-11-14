@@ -1,14 +1,9 @@
 # Power Capital Site Editing Account Setup
 
-Follow this guide to take over controls of powercapital.cloud and setup the ability for non-tech users to edit the site.
+Follow this guide to take over controls of powercapital.cloud and setup the ability to edit. If something goes wrong at any time, take a screenshot and send it to us.
 
-You'll create two free accounts:
-- **GitHub**, the repository where the website's files are stored. This will remain free unless you upgrade for enterprise security or advanced collaboration controls.
-- **TinaCloud**, the editing capability. Sign in to it with your GitHub account.
-
----
-
-## Step 1: Create a GitHub account and share the username
+## Step 1: Create a free GitHub account and share the username
+This is the repository where the website's files are stored. This will remain free unless you upgrade for enterprise security or advanced collaboration controls.
 
 1. Go to **https://github.com/signup**.
 2. Create an account & verify your email
@@ -19,13 +14,14 @@ You'll create two free accounts:
 1. We will invite you to the `powercapital-cms` repository.
 2. You'll get an email from GitHub. Click **View invitation**, then **Accept invitation**.
 
-## Step 3: Create your TinaCloud account and project
+## Step 3: Create a free TinaCloud account and project
+This enables the editing capability we've built for your site to be edited by non-tech users. Its free for up to 2 users on the account **(Do not add any others users yet - see step 5)**.
 
 1. Go to **https://app.tina.io** and choose **Sign in with GitHub**. Approve the permissions it asks for.
 2. Click to create a **new project** and connect it to a GitHub repository.
 3. Choose the repository **powercapital-cms**.
 4. Fill in the project settings:
-   - **Project name:** `Power Capital Site` (can by whatever you'd like to call it)
+   - **Project name:** `Power Capital Site` (can be whatever you'd like to call it)
    - **Site URLs:** Add a URL entry for each of the below (5 separate entries). This one-time setup gives you the rights to edit the site in production as well as any test environments in the future if needed.
 
      ```
@@ -91,9 +87,4 @@ If you want to give the second seat to us, follow these steps:
 4. Click **Save**. The change(s) will take effect in the preview immediately for everything except Menu Bar changes.
 5. Wait up to 5 minutes and refresh the main site (**https://powercapital.cloud**). Your change(s) should be live.
 
----
-
-### If something goes wrong
-- **"Repository not found" in TinaCloud:** check that you accepted the GitHub invitation in Step 2. Then, in TinaCloud, reconnect GitHub and allow access to `powercapital-cms`.
-- **The image picker says "Media needs to be turned on":** go to your project's **Media** tab and click **Sync Media**.
-- **Anything else:** take a screenshot and send it to us.
+**Congratulations! You can now manage your editing needs on your site!**
