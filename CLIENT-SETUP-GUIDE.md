@@ -1,43 +1,32 @@
-# Power Capital Website: Your Editing Account Setup
+# Power Capital Site Editing Account Setup
 
-This guide sets up your own login for editing the Power Capital website. It takes about 20–30 minutes. Kala can walk you through it on a screen-share, or you can follow it on your own and send Kala the two items in Step 4.
+Follow this guide to take over controls of powercapital.cloud and setup the ability for non-tech users to edit the site.
 
 You'll create two free accounts:
-- **GitHub**, where the website's files are stored
-- **TinaCloud**, the editor you'll use to change text and images on the site. You sign in to it with your GitHub account.
-
-**Before you start:** have your phone handy. GitHub asks you to set up a security code app or text messages.
+- **GitHub**, the repository where the website's files are stored. This will remain free unless you upgrade for enterprise security or advanced collaboration controls.
+- **TinaCloud**, the editing capability. Sign in to it with your GitHub account.
 
 ---
 
-## Step 1: Create your GitHub account (about 5 minutes)
+## Step 1: Create a GitHub account and share the username
 
 1. Go to **https://github.com/signup**.
-2. Enter **your own email address**. Use one you'll keep long-term, such as your business email.
-3. Choose a password and a username (for example `jroberts-powercapital`).
-4. Check your email for GitHub's code and enter it.
-5. If GitHub offers a paid plan, choose **Free**.
-6. **Set up two-factor authentication** when GitHub asks (or under Settings → Password and authentication):
-   - Using an authenticator app on your phone, such as Google Authenticator or Microsoft Authenticator, is the most reliable option.
-   - **Save the recovery codes** GitHub shows you somewhere safe, such as a password manager or a printed copy. They're the only way back in if you lose your phone.
-7. **Send Kala your GitHub username** (not your password).
+2. Create an account & verify your email
+3. Send your GitHub username **(not your password)** to us
 
-## Step 2: Accept the invitation to the website files (about 1 minute)
+## Step 2: Accept the GitHub invitation
 
-1. Kala will invite you to the website's files, called the `powercapital-cms` repository.
+1. We will invite you to the `powercapital-cms` repository.
 2. You'll get an email from GitHub. Click **View invitation**, then **Accept invitation**.
-   - You can also find it at **https://github.com/KalaRoberts/powercapital-cms/invitations** while signed in.
 
-## Step 3: Create your TinaCloud account and project (about 10 minutes)
+## Step 3: Create your TinaCloud account and project
 
 1. Go to **https://app.tina.io** and choose **Sign in with GitHub**. Approve the permissions it asks for.
-2. If TinaCloud offers a plan, choose **Free**.
-3. Click to create a **new project** and connect it to a GitHub repository.
-   - If GitHub asks which repositories TinaCloud may use, allow **KalaRoberts/powercapital-cms**, or "All repositories".
-4. Choose the repository **powercapital-cms**.
-5. Fill in the project settings:
-   - **Project name:** `Power Capital Site`
-   - **Site URLs:** these tell TinaCloud which web addresses can use the editor. Add each one as its own Site URL entry, using the copy button on each box.
+2. Click to create a **new project** and connect it to a GitHub repository.
+3. Choose the repository **powercapital-cms**.
+4. Fill in the project settings:
+   - **Project name:** `Power Capital Site` (can by whatever you'd like to call it)
+   - **Site URLs:** Add each of the below as its own Site URL entry (copy button for your convenience). This one-time setup gives you the rights to edit the site in production as well as any test environments in the future if needed.
 
      ```
      http://localhost:4321
@@ -60,54 +49,47 @@ You'll create two free accounts:
      ```
 
    - **Advanced settings → Path to Tina folder:** leave it **blank**.
-6. Click **Save** or **Create project**.
-7. Open the **Media** tab and click **Sync Media**. This lets the editor show the site's images.
-8. Open the **Tokens** tab and click **New token**:
+5. Click **Save** or **Create project**.
+6. Open the **Media** tab and click **Sync Media**. This lets the editor show the site's images.
+7. Open the **Tokens** tab and click **New token**:
    - **Type:** Content (read-only)
    - **Name:** `Website build`
    - **Git branches:** `*` (just an asterisk)
    - Click **Create**.
 
-## Step 4: Send Kala two items, securely
+## Step 4: Send us your token IDs 
 
-Kala needs these to connect the website to your new project:
+Share your token IDs with us so that we can connect the site to your Tina account for editing.
 
 | Item | Where to find it | Private? |
 |---|---|---|
 | **Client ID** | Project → **Overview** tab | No, this one is safe to share |
 | **Content token** | Project → **Tokens** tab → the "Website build" token | **Yes. Treat it like a password.** |
 
-**Please don't send the token by regular email or text.** Instead, either:
-- paste it into a password manager's secure share, such as 1Password or Bitwarden Send, or
-- read it out on the call so Kala can enter it directly.
+**Please don't send the token by regular email or text.** Instead read it to us on a call so we can enter it directly.
 
 ## Step 5: (Optional) Add Kala to your project
 
-TinaCloud accounts stay free if they have 2 users or fewer. You are one of those users. If you add Kala, she will take the last free seat. If you need someone else to have that seat, talk to Kala about how to coordinate without giving it to her.
+TinaCloud accounts stay free if they have 2 users or fewer. You are one of those users. If you add us, we will take the last free seat. If you need someone else to have that seat, talk to us about how to coordinate without adding us on your account.
 
-If you want to give the second seat to Kala, follow these steps:
+If you want to give the second seat to us, follow these steps:
 - In your TinaCloud project, open **Collaborators** (or **User management**).
 - Invite Kala's email: **karoberts2014@gmail.com**.
 
-## Step 6: Try the editor (after Kala confirms the connection)
+## Step 6: Try the editor (after we confirm the connection)
 
 **Your everyday editing address is:**
 **https://powercapital.cloud/admin**
 
-Kala may also ask you to use **https://powercapital-cms.jr-1791.workers.dev/admin/index.html#/~/**. That address is only for testing and troubleshooting, for example if the main address isn't working yet or Kala is checking a problem. Otherwise, always edit from the powercapital.cloud address above.
-
-1. Go to the editing address (or the testing address, if Kala asks).
+1. Go to the editing address.
 2. Sign in with your TinaCloud account.
 3. Click any text on the page then enter your change(s) in the editor on the left (you should see the preview change in real time for most text).
 4. Click **Save**. The change(s) will take effect in the preview immediately for everything except Menu Bar changes.
 5. Wait up to 5 minutes and refresh the main site (**https://powercapital.cloud**). Your change(s) should be live.
-
-
 
 ---
 
 ### If something goes wrong
 - **"Repository not found" in TinaCloud:** check that you accepted the GitHub invitation in Step 2. Then, in TinaCloud, reconnect GitHub and allow access to `powercapital-cms`.
 - **The image picker says "Media needs to be turned on":** go to your project's **Media** tab and click **Sync Media**.
-- **Locked out of GitHub:** use one of the recovery codes you saved in Step 1.
-- **Anything else:** take a screenshot and send it to Kala.
+- **Anything else:** take a screenshot and send it to us.
